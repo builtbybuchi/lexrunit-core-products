@@ -81,16 +81,22 @@ jobs:
           pnpm install
           doppler run -- pnpm run build
           
-          # Copy index.html to 200.html to support SPA fallback routing without causing infinite redirect loops
-          if [ -f "dist/index.html" ]; then
-            cp dist/index.html dist/200.html
-          fi
-          
           FULL_PROJECT_NAME="${{ env.CF_PROJECT_NAME }}${{ env.PROJECT_ENV_SUFFIX }}"
           echo "Deploying to $FULL_PROJECT_NAME on Cloudflare Workers..."
           
-          # Deploying as a worker (assuming project has a wrangler.toml or is compatible with direct deployment)
-          doppler run -- npx wrangler deploy --assets dist --name "$FULL_PROJECT_NAME" --compatibility-date 2026-06-24
+          # Dynamically create wrangler.toml for Single Page Application routing natively
+          cat <<EOF > wrangler.toml
+          name = "$FULL_PROJECT_NAME"
+          compatibility_date = "2026-06-24"
+
+          [assets]
+          directory = "dist"
+          binding = "ASSETS"
+          not_found_handling = "single-page-app"
+          EOF
+          
+          # Deploying as an Asset-only worker
+          doppler run -- npx wrangler deploy
 
       - name: Deploy (Node.js Backend)
         if: ${{ github.event.inputs.app == 'base-backend' }}
