@@ -36,7 +36,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Install Doppler CLI
         uses: dopplerhq/cli-action@v3
@@ -116,6 +116,7 @@ jobs:
             echo "[project]" > pyproject.toml
             echo "name = \"$FULL_PROJECT_NAME\"" >> pyproject.toml
             echo "version = \"0.1.0\"" >> pyproject.toml
+            echo "requires-python = \">=3.12\"" >> pyproject.toml
             echo "dependencies = [" >> pyproject.toml
             # Read requirements.txt, ignore comments and empty lines, strip whitespace
             grep -v '^\s*#' requirements.txt | grep -v '^\s*$' | awk '{print "  \"" $1 "\","}' >> pyproject.toml
