@@ -12,8 +12,11 @@ const NotFoundPage: React.FC = () => {
                     </div>
                 </div>
 
-                <p className="text-gray-600 mb-8 text-lg">
+                <p className="text-gray-600 mb-2 text-lg">
                     The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
+                </p>
+                <p className="text-gray-500 mb-8 font-mono bg-gray-100 p-2 rounded text-sm break-all">
+                    URL: {typeof window !== 'undefined' ? window.location.href : ''}
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
