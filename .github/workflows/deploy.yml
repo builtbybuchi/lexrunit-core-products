@@ -92,8 +92,23 @@ jobs:
           # Deploying as a worker (assuming project has a wrangler.toml or is compatible with direct deployment)
           doppler run -- npx wrangler deploy --assets dist --name "$FULL_PROJECT_NAME" --compatibility-date 2026-06-24
 
+      - name: Deploy (Node.js Backend)
+        if: ${{ github.event.inputs.app == 'base-backend' }}
+        working-directory: ./base-backend-node
+        run: |
+          npm install
+          
+          FULL_PROJECT_NAME="${{ env.CF_PROJECT_NAME }}${{ env.PROJECT_ENV_SUFFIX }}"
+          echo "Deploying to $FULL_PROJECT_NAME on Cloudflare Workers..."
+          
+          # Sync all Doppler secrets securely to the Cloudflare Worker
+          doppler secrets download --no-file --format=json | npx wrangler secret bulk --name "$FULL_PROJECT_NAME"
+          
+          # Deploy the Worker code
+          npx wrangler deploy --name "$FULL_PROJECT_NAME"
+
       - name: Deploy (Backend / AI / Bot)
-        if: ${{ github.event.inputs.app == 'base-backend' || github.event.inputs.app == 'lexcare_ai2' || github.event.inputs.app == 'lexcare-whatsapp-bot' }}
+        if: ${{ github.event.inputs.app == 'lexcare_ai2' || github.event.inputs.app == 'lexcare-whatsapp-bot' }}
         working-directory: ./${{ github.event.inputs.app }}
         run: |
           # If there is a build step for the backend before deploying to Cloudflare Workers (e.g. edge functions), add it here.

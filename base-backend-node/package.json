@@ -1,0 +1,28 @@
+{
+  "name": "base-backend-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npm run setup:local && wrangler dev",
+    "deploy": "wrangler deploy",
+    "setup:local": "doppler setup --project lexrunit --config dev && doppler secrets download --no-file --format=env > .dev.vars",
+    "deploy:stg": "doppler setup --project lexrunit --config stg && doppler secrets download --no-file --format=json | wrangler secret bulk --name lexrunit-base-backend-stg && wrangler deploy --name lexrunit-base-backend-stg",
+    "deploy:prd": "doppler setup --project lexrunit --config prd && doppler secrets download --no-file --format=json | wrangler secret bulk --name lexrunit-base-backend && wrangler deploy --name lexrunit-base-backend"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "hono": "^4.12.27",
+    "libphonenumber-js": "^1.13.7",
+    "node-appwrite": "^26.2.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260624.1",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.104.0"
+  }
+}

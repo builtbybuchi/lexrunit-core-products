@@ -1,25 +1,8 @@
 import { motion } from 'framer-motion';
-import { MessageCircle, ArrowRight, Star, CheckCircle2 } from 'lucide-react';
-import HeroCanvas from './HeroCanvas';
+import { MessageCircle, CheckCircle2 } from 'lucide-react';
 
 const WHATSAPP_LINK = 'https://wa.me/2349012512401';
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.12, delayChildren: 0.3 },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 24 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: [0.25, 1, 0.5, 1] as [number, number, number, number] },
-  },
-};
 
 export default function Hero() {
   return (

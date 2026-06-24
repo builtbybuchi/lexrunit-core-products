@@ -51,3 +51,10 @@ The entire application here uses one database. Ensure to run you own local versi
 
 Deployment Guide: 
 The application deployment is handled by github actions. All applications are hosted on cloudflare. Internal testing staging deployments are used to test before final deployment, after your PR is merged to staging branch, you can check the staging link and test the changes. 
+
+To deploy the base-backend-node to cloudflare, you can use the command below:
+
+npm run deploy:prd - for production
+npm run deploy:stg - for staging
+
+
