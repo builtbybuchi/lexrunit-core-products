@@ -108,6 +108,7 @@ jobs:
             echo "name = \"$FULL_PROJECT_NAME\"" > wrangler.toml
             echo "compatibility_date = \"2026-06-24\"" >> wrangler.toml
             echo "compatibility_flags = [\"python_workers\"]" >> wrangler.toml
+            echo "main = \"main.py\"" >> wrangler.toml
           fi
             
           # Auto-generate pyproject.toml for pywrangler if not present
