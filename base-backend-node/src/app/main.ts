@@ -17,7 +17,12 @@ const app = new Hono<{ Bindings: Bindings }>();
 
 // Global Middlewares
 app.use('*', cors({
-  origin: ['https://lexrunit.com', 'https://www.lexrunit.com', 'http://localhost:5173', 'http://localhost:3000'],
+  origin: (origin) => {
+    if (!origin) return 'https://lexrunit.com';
+    if (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:')) return origin;
+    const allowed = ['https://lexrunit.com', 'https://www.lexrunit.com'];
+    return allowed.includes(origin) ? origin : 'https://lexrunit.com';
+  },
   allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowHeaders: ['Content-Type', 'Authorization', 'x-lexrunit-api-key'],
   credentials: true,
@@ -30,8 +35,18 @@ app.get('/', (c) => c.json({ message: 'Base Backend API', version: '0.1.0' }));
 
 // API V1 Group
 const api = new Hono<{ Bindings: Bindings }>();
-api.use('/admin/*', clerkMiddleware(), requireAuth);
-api.use('/users/*', clerkMiddleware(), requireAuth);
+
+// Provide Clerk credentials from Cloudflare env bindings
+const clerkAuthMiddleware = async (c: any, next: any) => {
+  const handler = clerkMiddleware({
+    secretKey: c.env.CLERK_SECRET_KEY,
+    publishableKey: c.env.VITE_CLERK_PUBLISHABLE_KEY,
+  });
+  return handler(c, next);
+};
+
+api.use('/admin/*', clerkAuthMiddleware, requireAuth);
+api.use('/users/*', clerkAuthMiddleware, requireAuth);
 
 api.route('/hospitals', hospitalsRouter);
 api.route('/careers', careersRouter);
