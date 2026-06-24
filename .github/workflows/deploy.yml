@@ -108,18 +108,37 @@ jobs:
             echo "name = \"$FULL_PROJECT_NAME\"" > wrangler.toml
             echo "compatibility_date = \"2026-06-24\"" >> wrangler.toml
             echo "compatibility_flags = [\"python_workers\"]" >> wrangler.toml
+          fi
             
-            # Ensure there's a main.py entrypoint at root
-            if [ ! -f "main.py" ]; then
-              if [ -f "app/main.py" ]; then
-                echo "from app.main import app" > main.py
-                echo "__all__ = ['app']" >> main.py
-                echo "main = \"main.py\"" >> wrangler.toml
-              fi
-            else
-              echo "main = \"main.py\"" >> wrangler.toml
+          # Auto-generate pyproject.toml for pywrangler if not present
+          if [ ! -f "pyproject.toml" ] && [ -f "requirements.txt" ]; then
+            echo "Creating pyproject.toml for Python Worker..."
+            echo "[project]" > pyproject.toml
+            echo "name = \"$FULL_PROJECT_NAME\"" >> pyproject.toml
+            echo "version = \"0.1.0\"" >> pyproject.toml
+            echo "dependencies = [" >> pyproject.toml
+            # Read requirements.txt, ignore comments and empty lines, strip whitespace
+            grep -v '^\s*#' requirements.txt | grep -v '^\s*$' | awk '{print "  \"" $1 "\","}' >> pyproject.toml
+            echo "]" >> pyproject.toml
+            echo "" >> pyproject.toml
+            echo "[dependency-groups]" >> pyproject.toml
+            echo "dev = [\"workers-py\", \"workers-runtime-sdk\"]" >> pyproject.toml
+          fi
+          
+          # Ensure there's a main.py entrypoint at root
+          if [ ! -f "main.py" ]; then
+            if [ -f "app/main.py" ]; then
+              echo "from app.main import app" > main.py
+              echo "__all__ = ['app']" >> main.py
             fi
           fi
           
-          # Deploying as a worker
-          doppler run -- npx wrangler deploy
+          # Install uv and deploy using pywrangler
+          echo "Installing uv and pywrangler..."
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          export PATH="$HOME/.cargo/bin:$PATH"
+          uv sync || true
+          uv tool install workers-py
+          
+          # Deploying as a Python worker
+          doppler run -- uv run pywrangler deploy
