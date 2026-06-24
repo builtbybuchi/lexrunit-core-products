@@ -92,7 +92,7 @@ jobs:
           echo "Deploying to $FULL_PROJECT_NAME on Cloudflare Workers..."
           
           # Deploying as a worker (assuming project has a wrangler.toml or is compatible with direct deployment)
-          doppler run -- npx wrangler deploy --assets dist --name "$FULL_PROJECT_NAME"
+          doppler run -- npx wrangler deploy --assets dist --name "$FULL_PROJECT_NAME" --compatibility-date 2026-06-24
 
       - name: Deploy (Backend / AI / Bot)
         if: ${{ github.event.inputs.app == 'base-backend' || github.event.inputs.app == 'lexcare_ai2' || github.event.inputs.app == 'lexcare-whatsapp-bot' }}
@@ -105,4 +105,4 @@ jobs:
           echo "Deploying to $FULL_PROJECT_NAME on Cloudflare Workers..."
           
           # Deploying as a worker (assuming project has a wrangler.toml or is compatible with direct deployment)
-          doppler run -- npx wrangler deploy --name "$FULL_PROJECT_NAME"
+          doppler run -- npx wrangler deploy --name "$FULL_PROJECT_NAME" --compatibility-date 2026-06-24
