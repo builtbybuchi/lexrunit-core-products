@@ -16,9 +16,9 @@ const app = new Hono<{ Bindings: Bindings }>();
 
 // Global Middlewares
 app.use('*', cors({
-  origin: '*',
-  allowMethods: ['*'],
-  allowHeaders: ['*'],
+  origin: ['https://lexrunit.com', 'https://www.lexrunit.com', 'http://localhost:5173', 'http://localhost:3000'],
+  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowHeaders: ['Content-Type', 'Authorization', 'x-lexrunit-api-key'],
   credentials: true,
 }));
 
