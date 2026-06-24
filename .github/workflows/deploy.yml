@@ -59,6 +59,16 @@ jobs:
             echo "DOPPLER_CONFIG=stg" >> $GITHUB_ENV
             echo "PROJECT_ENV_SUFFIX=-stg" >> $GITHUB_ENV
           fi
+          
+          if [ "${{ github.event.inputs.app }}" = "official-website" ]; then
+            echo "CF_PROJECT_NAME=lexrunit-official-website" >> $GITHUB_ENV
+          elif [ "${{ github.event.inputs.app }}" = "dr-andre-landing-page" ]; then
+            echo "CF_PROJECT_NAME=lexrunit-dr-andre-landing-page" >> $GITHUB_ENV
+          elif [ "${{ github.event.inputs.app }}" = "base-backend" ]; then
+            echo "CF_PROJECT_NAME=lexrunit-base-backend" >> $GITHUB_ENV
+          else
+            echo "CF_PROJECT_NAME=${{ github.event.inputs.app }}" >> $GITHUB_ENV
+          fi
 
       - name: Install Python Dependencies & Run DB Setup
         run: |
@@ -77,7 +87,7 @@ jobs:
         run: |
           pnpm install
           doppler run -- pnpm run build
-          doppler run -- npx wrangler pages deploy dist --project-name ${{ github.event.inputs.app }}${{ env.PROJECT_ENV_SUFFIX }} --commit-dirty=true
+          doppler run -- npx wrangler pages deploy dist --project-name ${{ env.CF_PROJECT_NAME }}${{ env.PROJECT_ENV_SUFFIX }} --commit-dirty=true
 
       - name: Deploy (Backend / AI / Bot)
         if: ${{ github.event.inputs.app == 'base-backend' || github.event.inputs.app == 'lexcare_ai2' || github.event.inputs.app == 'lexcare-whatsapp-bot' }}
@@ -85,4 +95,4 @@ jobs:
         run: |
           # If there is a build step for the backend before deploying to CF Pages (e.g. edge functions), add it here.
           # Otherwise, this deploys the directory to Cloudflare Pages.
-          doppler run -- npx wrangler pages deploy . --project-name ${{ github.event.inputs.app }}${{ env.PROJECT_ENV_SUFFIX }} --commit-dirty=true
+          doppler run -- npx wrangler pages deploy . --project-name ${{ env.CF_PROJECT_NAME }}${{ env.PROJECT_ENV_SUFFIX }} --commit-dirty=true

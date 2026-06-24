@@ -7,8 +7,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const BASE_URL = 'https://lexrunit.com';
-const PROJECT_ID = '68e67ffd0007ce1f504f';
-const ENDPOINT = 'https://storage.lexrunit.com/v1';
+const PROJECT_ID = 'lexrunit-general-db';
+const ENDPOINT = 'https://fra.cloud.appwrite.io/v1';
 const DATABASE_ID = 'website-db';
 const COLLECTIONS = {
     BLOGS: 'blogs',
