@@ -102,6 +102,11 @@ const App: React.FC = () => {
       return <NewsArticlePage slug={parts[2]} />;
     }
 
+    // Clerk routes that have sub-paths (like /sign-in/sso-callback, /sign-up/verify, /account/profile)
+    if (normalized.startsWith('/sign-in')) return <SignInPage />;
+    if (normalized.startsWith('/sign-up')) return <SignUpPage />;
+    if (normalized.startsWith('/account')) return <AccountPage />;
+
     switch (normalized) {
       case '/':
         return <HomePage />;
@@ -139,12 +144,6 @@ const App: React.FC = () => {
         return <KernalSystemsPage />;
       case '/admin':
         return <AdminPage />;
-      case '/sign-in':
-        return <SignInPage />;
-      case '/sign-up':
-        return <SignUpPage />;
-      case '/account':
-        return <AccountPage />;
       case '/sso-callback':
         return <SsoCallbackPage />;
       case '/higs':
