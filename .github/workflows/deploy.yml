@@ -1,0 +1,88 @@
+name: Deploy to Cloudflare Pages
+
+on:
+  workflow_dispatch:
+    inputs:
+      app:
+        description: 'Application to deploy'
+        required: true
+        type: choice
+        options:
+          - official-website
+          - dr-andre-landing-page
+          - base-backend
+          - lexcare_ai2
+          - lexcare-whatsapp-bot
+      environment:
+        description: 'Deployment Environment'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  deploy:
+    name: Deploy ${{ github.event.inputs.app }} to ${{ github.event.inputs.environment }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Doppler CLI
+        uses: dopplerhq/cli-action@v3
+
+      - name: Set Environment Variables
+        run: |
+          echo "DOPPLER_TOKEN=${{ secrets.DOPPLER_TOKEN }}" >> $GITHUB_ENV
+          echo "DOPPLER_PROJECT=lexrunit" >> $GITHUB_ENV
+          if [ "${{ github.event.inputs.environment }}" = "production" ]; then
+            echo "DOPPLER_CONFIG=prd" >> $GITHUB_ENV
+            echo "PROJECT_ENV_SUFFIX=" >> $GITHUB_ENV
+          else
+            echo "DOPPLER_CONFIG=stg" >> $GITHUB_ENV
+            echo "PROJECT_ENV_SUFFIX=-stg" >> $GITHUB_ENV
+          fi
+
+      - name: Install Python Dependencies & Run DB Setup
+        run: |
+          echo "Installing dependencies for db-setup-script..."
+          if [ -f "base-backend/requirements.txt" ]; then
+            pip install -r base-backend/requirements.txt
+          else
+            pip install appwrite
+          fi
+          echo "Running database setup script..."
+          doppler run -- python db-setup-script.py
+
+      - name: Build and Deploy (Frontend)
+        if: ${{ github.event.inputs.app == 'official-website' || github.event.inputs.app == 'dr-andre-landing-page' }}
+        working-directory: ./${{ github.event.inputs.app }}
+        run: |
+          pnpm install
+          doppler run -- pnpm run build
+          doppler run -- npx wrangler pages deploy dist --project-name ${{ github.event.inputs.app }}${{ env.PROJECT_ENV_SUFFIX }} --commit-dirty=true
+
+      - name: Deploy (Backend / AI / Bot)
+        if: ${{ github.event.inputs.app == 'base-backend' || github.event.inputs.app == 'lexcare_ai2' || github.event.inputs.app == 'lexcare-whatsapp-bot' }}
+        working-directory: ./${{ github.event.inputs.app }}
+        run: |
+          # If there is a build step for the backend before deploying to CF Pages (e.g. edge functions), add it here.
+          # Otherwise, this deploys the directory to Cloudflare Pages.
+          doppler run -- npx wrangler pages deploy . --project-name ${{ github.event.inputs.app }}${{ env.PROJECT_ENV_SUFFIX }} --commit-dirty=true

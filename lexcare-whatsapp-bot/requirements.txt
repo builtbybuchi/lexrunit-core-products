@@ -1,0 +1,8 @@
+flask
+python-dotenv
+openai
+aiohttp
+requests
+gunicorn
+black
+flake8

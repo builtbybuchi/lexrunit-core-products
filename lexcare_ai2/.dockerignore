@@ -1,0 +1,56 @@
+# Dockerfile
+Dockerfile
+
+# Docker Compose
+docker-compose.yml
+docker-compose.override.yml
+docker-compose.prod.yml
+
+# Environment files
+.env.local
+.env.prod
+
+# Docker volumes
+sessions/
+transcripts/
+
+# Build artifacts
+*.log
+*.pid
+
+# SSL certificates (should be mounted separately)
+ssl/
+
+# Node modules if any
+node_modules/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git
+.mypy_cache
+.pytest_cache
+.hypothesis
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

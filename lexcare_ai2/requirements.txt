@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+pydantic
+python-dotenv
+requests
+supabase
+openai
+PyPDF2
+fpdf
+pypdf
+groq
+appwrite
+google-genai

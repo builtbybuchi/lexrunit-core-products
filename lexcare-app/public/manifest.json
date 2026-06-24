@@ -1,0 +1,27 @@
+{
+  "name": "LexCare - Your Health Companion",
+  "short_name": "LexCare",
+  "description": "A patient-facing healthcare application for consultations and health tracking",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#021488",
+  "theme_color": "#021488",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "categories": ["health", "medical", "lifestyle"],
+  "lang": "en",
+  "dir": "ltr"
+}
