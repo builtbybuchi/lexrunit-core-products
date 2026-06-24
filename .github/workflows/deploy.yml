@@ -88,6 +88,11 @@ jobs:
           pnpm install
           doppler run -- pnpm run build
           
+          # Copy index.html to 200.html to support SPA fallback routing without causing infinite redirect loops
+          if [ -f "dist/index.html" ]; then
+            cp dist/index.html dist/200.html
+          fi
+          
           FULL_PROJECT_NAME="${{ env.CF_PROJECT_NAME }}${{ env.PROJECT_ENV_SUFFIX }}"
           echo "Deploying to $FULL_PROJECT_NAME on Cloudflare Workers..."
           
