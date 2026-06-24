@@ -29,7 +29,8 @@ app.get('/', (c) => c.json({ message: 'Base Backend API', version: '0.1.0' }));
 
 // API V1 Group
 const api = new Hono<{ Bindings: Bindings }>();
-api.use('*', verifyApiKey);
+api.use('/admin/*', verifyApiKey);
+api.use('/users/*', verifyApiKey);
 
 api.route('/hospitals', hospitalsRouter);
 api.route('/careers', careersRouter);
