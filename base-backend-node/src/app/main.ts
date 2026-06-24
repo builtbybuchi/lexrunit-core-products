@@ -1,7 +1,8 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-import { rateLimiter, verifyApiKey } from './core/dependencies';
+import { rateLimiter, requireAuth } from './core/dependencies';
 import { Bindings } from './core/types';
+import { clerkMiddleware } from '@hono/clerk-auth';
 
 import { hospitalsRouter } from './api/v1/routes/hospitals';
 import { careersRouter } from './api/v1/routes/careers';
@@ -29,8 +30,8 @@ app.get('/', (c) => c.json({ message: 'Base Backend API', version: '0.1.0' }));
 
 // API V1 Group
 const api = new Hono<{ Bindings: Bindings }>();
-api.use('/admin/*', verifyApiKey);
-api.use('/users/*', verifyApiKey);
+api.use('/admin/*', clerkMiddleware(), requireAuth);
+api.use('/users/*', clerkMiddleware(), requireAuth);
 
 api.route('/hospitals', hospitalsRouter);
 api.route('/careers', careersRouter);

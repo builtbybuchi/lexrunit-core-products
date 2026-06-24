@@ -2,12 +2,19 @@ import { Hono } from 'hono';
 import { getDatabases, DATABASE_ID } from '../../../services/appwriteClient';
 import { Query, ID } from 'node-appwrite';
 import { Bindings } from '../../../core/types';
+import { getAuth } from '@hono/clerk-auth';
 
 export const adminRouter = new Hono<{ Bindings: Bindings }>();
 
 const verifyAdmin = async (c: any, next: any) => {
   const db = getDatabases(c.env);
-  const clerkId = c.req.param('clerk_id');
+  const auth = getAuth(c);
+  const clerkId = auth?.userId;
+  
+  if (!clerkId) {
+    return c.json({ detail: 'Not authenticated' }, 401);
+  }
+
   try {
     const res = await db.listDocuments(DATABASE_ID, 'users', [Query.equal('clerk_id', clerkId)]);
     if (!res.documents.length || res.documents[0].role !== 'admin') {
@@ -21,7 +28,7 @@ const verifyAdmin = async (c: any, next: any) => {
 
 adminRouter.use('*', verifyAdmin);
 
-adminRouter.get('/:clerk_id/collections/:collection_id', async (c) => {
+adminRouter.get('/collections/:collection_id', async (c) => {
   const db = getDatabases(c.env);
   const colId = c.req.param('collection_id');
   try {
@@ -38,20 +45,20 @@ adminRouter.get('/:clerk_id/collections/:collection_id', async (c) => {
   }
 });
 
-adminRouter.delete('/:clerk_id/collections/:collection_id/:doc_id', async (c) => {
+adminRouter.delete('/collections/:collection_id/:doc_id', async (c) => {
   const db = getDatabases(c.env);
   await db.deleteDocument(DATABASE_ID, c.req.param('collection_id'), c.req.param('doc_id'));
   return c.json({ status: 'success' });
 });
 
-adminRouter.patch('/:clerk_id/collections/:collection_id/:doc_id', async (c) => {
+adminRouter.patch('/collections/:collection_id/:doc_id', async (c) => {
   const db = getDatabases(c.env);
   const payload = await c.req.json();
   await db.updateDocument(DATABASE_ID, c.req.param('collection_id'), c.req.param('doc_id'), payload);
   return c.json({ status: 'success' });
 });
 
-adminRouter.post('/:clerk_id/collections/:collection_id', async (c) => {
+adminRouter.post('/collections/:collection_id', async (c) => {
   const db = getDatabases(c.env);
   const payload = await c.req.json();
   const doc = await db.createDocument(DATABASE_ID, c.req.param('collection_id'), ID.unique(), payload);

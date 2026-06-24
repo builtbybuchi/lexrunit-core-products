@@ -3,15 +3,22 @@ import { getDatabases, DATABASE_ID } from '../../../services/appwriteClient';
 import { Query, ID } from 'node-appwrite';
 import { Bindings } from '../../../core/types';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
+import { getAuth } from '@hono/clerk-auth';
 
 export const usersRouter = new Hono<{ Bindings: Bindings }>();
 
 usersRouter.post('/sync', async (c) => {
   const db = getDatabases(c.env);
   const payload = await c.req.json();
+  const auth = getAuth(c);
+  const clerkId = auth?.userId;
+  
+  if (!clerkId) {
+    return c.json({ detail: 'Unauthorized' }, 401);
+  }
   
   try {
-    const res = await db.listDocuments(DATABASE_ID, 'users', [Query.equal('clerk_id', payload.clerk_id)]);
+    const res = await db.listDocuments(DATABASE_ID, 'users', [Query.equal('clerk_id', clerkId)]);
     const name = `${payload.first_name || ''} ${payload.last_name || ''}`.trim() || payload.email;
     
     let phoneFormatted = payload.phone;
@@ -38,7 +45,7 @@ usersRouter.post('/sync', async (c) => {
       return c.json(updated);
     } else {
       const createData: any = {
-        clerk_id: payload.clerk_id,
+        clerk_id: clerkId,
         email: payload.email,
         name,
         role: 'user',
@@ -54,10 +61,14 @@ usersRouter.post('/sync', async (c) => {
   }
 });
 
-usersRouter.get('/:clerk_id/settings', async (c) => {
+usersRouter.get('/settings', async (c) => {
   const db = getDatabases(c.env);
+  const auth = getAuth(c);
+  const clerkId = auth?.userId;
+  if (!clerkId) return c.json({ detail: 'Unauthorized' }, 401);
+
   try {
-    const res = await db.listDocuments(DATABASE_ID, 'users', [Query.equal('clerk_id', c.req.param('clerk_id'))]);
+    const res = await db.listDocuments(DATABASE_ID, 'users', [Query.equal('clerk_id', clerkId)]);
     if (!res.documents.length) {
       return c.json({ detail: 'User not found' }, 404);
     }
@@ -68,11 +79,15 @@ usersRouter.get('/:clerk_id/settings', async (c) => {
   }
 });
 
-usersRouter.put('/:clerk_id/settings', async (c) => {
+usersRouter.put('/settings', async (c) => {
   const db = getDatabases(c.env);
   const payload = await c.req.json();
+  const auth = getAuth(c);
+  const clerkId = auth?.userId;
+  if (!clerkId) return c.json({ detail: 'Unauthorized' }, 401);
+
   try {
-    const res = await db.listDocuments(DATABASE_ID, 'users', [Query.equal('clerk_id', c.req.param('clerk_id'))]);
+    const res = await db.listDocuments(DATABASE_ID, 'users', [Query.equal('clerk_id', clerkId)]);
     if (!res.documents.length) {
       return c.json({ detail: 'User not found' }, 404);
     }
@@ -84,10 +99,14 @@ usersRouter.put('/:clerk_id/settings', async (c) => {
   }
 });
 
-usersRouter.get('/:clerk_id/role', async (c) => {
+usersRouter.get('/role', async (c) => {
   const db = getDatabases(c.env);
+  const auth = getAuth(c);
+  const clerkId = auth?.userId;
+  if (!clerkId) return c.json({ detail: 'Unauthorized' }, 401);
+
   try {
-    const res = await db.listDocuments(DATABASE_ID, 'users', [Query.equal('clerk_id', c.req.param('clerk_id'))]);
+    const res = await db.listDocuments(DATABASE_ID, 'users', [Query.equal('clerk_id', clerkId)]);
     if (res.documents.length) {
       return c.json({ role: res.documents[0].role || 'user' });
     }

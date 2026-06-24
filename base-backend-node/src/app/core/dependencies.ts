@@ -1,4 +1,5 @@
 import { Context, Next } from 'hono';
+import { getAuth } from '@hono/clerk-auth';
 
 export const verifyApiKey = async (c: Context, next: Next) => {
   const apiKey = c.req.header('x-lexrunit-api-key');
@@ -26,6 +27,14 @@ export const rateLimiter = async (c: Context, next: Next) => {
   
   if (record.count > MAX_REQUESTS_PER_WINDOW) {
     return c.json({ detail: 'Rate Limit Exceeded' }, 429);
+  }
+  await next();
+}
+
+export const requireAuth = async (c: Context, next: Next) => {
+  const auth = getAuth(c);
+  if (!auth?.userId) {
+    return c.json({ detail: 'Unauthorized' }, 401);
   }
   await next();
 }
