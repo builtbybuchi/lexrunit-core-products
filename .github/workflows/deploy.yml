@@ -1,4 +1,4 @@
-name: Deploy to Cloudflare Pages
+name: Deploy to Cloudflare Workers
 
 on:
   workflow_dispatch:
@@ -89,34 +89,20 @@ jobs:
           doppler run -- pnpm run build
           
           FULL_PROJECT_NAME="${{ env.CF_PROJECT_NAME }}${{ env.PROJECT_ENV_SUFFIX }}"
-          echo "Checking if project $FULL_PROJECT_NAME exists..."
+          echo "Deploying to $FULL_PROJECT_NAME on Cloudflare Workers..."
           
-          if doppler run -- npx wrangler pages project list | grep -q "$FULL_PROJECT_NAME"; then
-            echo "Project $FULL_PROJECT_NAME found."
-          else
-            echo "Project $FULL_PROJECT_NAME not found. Creating it..."
-            doppler run -- npx wrangler pages project create "$FULL_PROJECT_NAME" --production-branch main
-          fi
-          
-          echo "Deploying to $FULL_PROJECT_NAME..."
-          doppler run -- npx wrangler pages deploy dist --project-name "$FULL_PROJECT_NAME" --commit-dirty=true
+          # Deploying as a worker (assuming project has a wrangler.toml or is compatible with direct deployment)
+          doppler run -- npx wrangler deploy --assets dist --name "$FULL_PROJECT_NAME"
 
       - name: Deploy (Backend / AI / Bot)
         if: ${{ github.event.inputs.app == 'base-backend' || github.event.inputs.app == 'lexcare_ai2' || github.event.inputs.app == 'lexcare-whatsapp-bot' }}
         working-directory: ./${{ github.event.inputs.app }}
         run: |
-          # If there is a build step for the backend before deploying to CF Pages (e.g. edge functions), add it here.
-          # Otherwise, this deploys the directory to Cloudflare Pages.
+          # If there is a build step for the backend before deploying to Cloudflare Workers (e.g. edge functions), add it here.
+          # Otherwise, this deploys the backend to Cloudflare Workers.
           
           FULL_PROJECT_NAME="${{ env.CF_PROJECT_NAME }}${{ env.PROJECT_ENV_SUFFIX }}"
-          echo "Checking if project $FULL_PROJECT_NAME exists..."
+          echo "Deploying to $FULL_PROJECT_NAME on Cloudflare Workers..."
           
-          if doppler run -- npx wrangler pages project list | grep -q "$FULL_PROJECT_NAME"; then
-            echo "Project $FULL_PROJECT_NAME found."
-          else
-            echo "Project $FULL_PROJECT_NAME not found. Creating it..."
-            doppler run -- npx wrangler pages project create "$FULL_PROJECT_NAME" --production-branch main
-          fi
-          
-          echo "Deploying to $FULL_PROJECT_NAME..."
-          doppler run -- npx wrangler pages deploy . --project-name "$FULL_PROJECT_NAME" --commit-dirty=true
+          # Deploying as a worker (assuming project has a wrangler.toml or is compatible with direct deployment)
+          doppler run -- npx wrangler deploy --name "$FULL_PROJECT_NAME"
