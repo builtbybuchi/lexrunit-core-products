@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DATABASE_ID, COLLECTIONS } from '../lib/appwrite';
 import { Models, Query, ID } from 'appwrite';
 import ContentEditor from '../components/admin/ContentEditor';
-import { useUser, SignIn } from '@clerk/clerk-react';
+import { useUser, SignIn, useAuth } from '@clerk/clerk-react';
 
 // Types
 type Contact = Models.Document & {
@@ -87,12 +87,14 @@ type FeedbackEntry = Models.Document & {
 
 const AdminPage: React.FC = () => {
     const { user, isLoaded, isSignedIn } = useUser();
+    const { getToken } = useAuth();
 
     const apiDb = {
         listDocuments: async (dbId: string, collectionId: string, queries?: any[]) => {
             const BASE_URL = import.meta.env.VITE_BASE_BACKEND_URL || 'http://localhost:8001/api/v1';
-            const res = await fetch(`${BASE_URL}/admin/${user?.id}/collections/${collectionId}`, {
-                headers: { 'x-lexrunit-api-key': import.meta.env.VITE_LEXRUNIT_API_KEY || 'default-dev-key' }
+            const token = await getToken();
+            const res = await fetch(`${BASE_URL}/admin/collections/${collectionId}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
             });
             if (!res.ok) throw new Error('API Error');
             const data = await res.json();
@@ -100,9 +102,10 @@ const AdminPage: React.FC = () => {
         },
         createDocument: async (dbId: string, collectionId: string, docId: string, data: any) => {
             const BASE_URL = import.meta.env.VITE_BASE_BACKEND_URL || 'http://localhost:8001/api/v1';
-            const res = await fetch(`${BASE_URL}/admin/${user?.id}/collections/${collectionId}`, {
+            const token = await getToken();
+            const res = await fetch(`${BASE_URL}/admin/collections/${collectionId}`, {
                 method: 'POST',
-                headers: { 'x-lexrunit-api-key': import.meta.env.VITE_LEXRUNIT_API_KEY || 'default-dev-key', 'Content-Type': 'application/json' },
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
             if (!res.ok) throw new Error('API Error');
@@ -110,9 +113,10 @@ const AdminPage: React.FC = () => {
         },
         updateDocument: async (dbId: string, collectionId: string, docId: string, data: any) => {
             const BASE_URL = import.meta.env.VITE_BASE_BACKEND_URL || 'http://localhost:8001/api/v1';
-            const res = await fetch(`${BASE_URL}/admin/${user?.id}/collections/${collectionId}/${docId}`, {
+            const token = await getToken();
+            const res = await fetch(`${BASE_URL}/admin/collections/${collectionId}/${docId}`, {
                 method: 'PATCH',
-                headers: { 'x-lexrunit-api-key': import.meta.env.VITE_LEXRUNIT_API_KEY || 'default-dev-key', 'Content-Type': 'application/json' },
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
             if (!res.ok) throw new Error('API Error');
@@ -120,9 +124,10 @@ const AdminPage: React.FC = () => {
         },
         deleteDocument: async (dbId: string, collectionId: string, docId: string) => {
             const BASE_URL = import.meta.env.VITE_BASE_BACKEND_URL || 'http://localhost:8001/api/v1';
-            const res = await fetch(`${BASE_URL}/admin/${user?.id}/collections/${collectionId}/${docId}`, {
+            const token = await getToken();
+            const res = await fetch(`${BASE_URL}/admin/collections/${collectionId}/${docId}`, {
                 method: 'DELETE',
-                headers: { 'x-lexrunit-api-key': import.meta.env.VITE_LEXRUNIT_API_KEY || 'default-dev-key' }
+                headers: { 'Authorization': `Bearer ${token}` }
             });
             if (!res.ok) throw new Error('API Error');
             return res.json();
@@ -190,20 +195,22 @@ const AdminPage: React.FC = () => {
         if (isLoaded) {
             if (isSignedIn && user) {
                 const BASE_URL = import.meta.env.VITE_BASE_BACKEND_URL || 'http://localhost:8001/api/v1';
-                fetch(`${BASE_URL}/users/${user.id}/role`, {
-                    headers: { 'x-lexrunit-api-key': import.meta.env.VITE_LEXRUNIT_API_KEY || 'default-dev-key' }
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.role === 'admin') {
-                        setIsAdmin(true);
-                    } else {
-                        setIsAdmin(false);
-                        alert('You are not authorized as an admin.');
-                    }
-                })
-                .catch(() => setIsAdmin(false))
-                .finally(() => setLoading(false));
+                getToken().then(token => {
+                    fetch(`${BASE_URL}/users/role`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.role === 'admin') {
+                            setIsAdmin(true);
+                        } else {
+                            setIsAdmin(false);
+                            alert('You are not authorized as an admin.');
+                        }
+                    })
+                    .catch(() => setIsAdmin(false))
+                    .finally(() => setLoading(false));
+                });
             } else {
                 setLoading(false);
             }

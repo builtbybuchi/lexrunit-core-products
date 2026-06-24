@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { UserProfile, useUser } from '@clerk/clerk-react';
+import { useAuth, useUser, UserProfile } from '@clerk/clerk-react';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 
 const AccountPage: React.FC = () => {
   const { user, isLoaded, isSignedIn } = useUser();
+  const { getToken } = useAuth();
   const [settings, setSettings] = useState<any>({ products: [] });
   const [phone, setPhone] = useState('');
   const [isEditingPhone, setIsEditingPhone] = useState(false);
@@ -12,14 +13,14 @@ const AccountPage: React.FC = () => {
   const [toastMessage, setToastMessage] = useState('');
   const [initialPhoneSet, setInitialPhoneSet] = useState(false);
 
-  const syncUser = (isManualSave = false) => {
+  const syncUser = async (isManualSave = false) => {
     if (isLoaded && isSignedIn && user) {
       if (isManualSave) setIsSaving(true);
       const BASE_URL = import.meta.env.VITE_BASE_BACKEND_URL || 'http://localhost:8001/api/v1';
       const API_KEY = import.meta.env.VITE_LEXRUNIT_API_KEY || 'default-dev-key';
+      const token = await getToken();
       
       const payload: any = {
-          clerk_id: user.id,
           email: user.primaryEmailAddress?.emailAddress,
           first_name: user.firstName,
           last_name: user.lastName,
@@ -33,7 +34,7 @@ const AccountPage: React.FC = () => {
         method: 'POST',
         headers: { 
             'Content-Type': 'application/json',
-            'x-lexrunit-api-key': API_KEY
+            'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(payload)
       })
@@ -54,7 +55,7 @@ const AccountPage: React.FC = () => {
               setToastMessage('Phone number saved successfully!');
               setTimeout(() => setToastMessage(''), 3000);
           }
-          return fetch(`${BASE_URL}/users/${user.id}/settings`, { headers: { 'x-lexrunit-api-key': API_KEY } });
+          return fetch(`${BASE_URL}/users/settings`, { headers: { 'Authorization': `Bearer ${token}` } });
       }).then(res => res.json())
       .then(data => setSettings(data))
       .catch((e) => {
