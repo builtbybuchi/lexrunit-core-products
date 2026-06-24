@@ -13,17 +13,10 @@ on:
           - base-backend
           - lexcare_ai2
           - lexcare-whatsapp-bot
-      environment:
-        description: 'Deployment Environment'
-        required: true
-        type: choice
-        options:
-          - staging
-          - production
 
 jobs:
   deploy:
-    name: Deploy ${{ github.event.inputs.app }} to ${{ github.event.inputs.environment }}
+    name: Deploy ${{ github.event.inputs.app }}
     runs-on: ubuntu-latest
     
     steps:
@@ -52,7 +45,7 @@ jobs:
         run: |
           echo "DOPPLER_TOKEN=${{ secrets.DOPPLER_TOKEN }}" >> $GITHUB_ENV
           echo "DOPPLER_PROJECT=lexrunit" >> $GITHUB_ENV
-          if [ "${{ github.event.inputs.environment }}" = "production" ]; then
+          if [ "${{ github.ref_name }}" = "main" ]; then
             echo "DOPPLER_CONFIG=prd" >> $GITHUB_ENV
             echo "PROJECT_ENV_SUFFIX=" >> $GITHUB_ENV
           else
