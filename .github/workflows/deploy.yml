@@ -106,10 +106,10 @@ jobs:
           if [ ! -f "wrangler.toml" ]; then
             echo "Creating wrangler.toml for Python Worker..."
             cat <<EOF > wrangler.toml
-name = "$FULL_PROJECT_NAME"
-compatibility_date = "2026-06-24"
-compatibility_flags = ["python_workers"]
-EOF
+            name = "$FULL_PROJECT_NAME"
+            compatibility_date = "2026-06-24"
+            compatibility_flags = ["python_workers"]
+            EOF
             
             # Ensure there's a main.py entrypoint at root
             if [ ! -f "main.py" ]; then
