@@ -119,12 +119,9 @@ jobs:
             echo "version = \"0.1.0\"" >> pyproject.toml
             echo "requires-python = \">=3.12\"" >> pyproject.toml
             echo "dependencies = [" >> pyproject.toml
-            # Read requirements.txt, ignore comments/empty lines, strip version constraints
-            grep -v '^\s*#' requirements.txt | grep -v '^\s*$' | sed 's/[=><].*//' | awk '{print "  \"" $1 "\","}' >> pyproject.toml
+            # Read requirements.txt, ignore comments/empty lines, strip version constraints, and EXCLUDE uvicorn
+            grep -v '^\s*#' requirements.txt | grep -v '^\s*$' | sed 's/[=><].*//' | grep -iv 'uvicorn' | awk '{print "  \"" $1 "\","}' >> pyproject.toml
             echo "]" >> pyproject.toml
-            echo "" >> pyproject.toml
-            echo "[dependency-groups]" >> pyproject.toml
-            echo "dev = [\"workers-py\", \"workers-runtime-sdk\"]" >> pyproject.toml
             
             # pywrangler will error out if requirements.txt exists
             mv requirements.txt requirements.txt.bak
