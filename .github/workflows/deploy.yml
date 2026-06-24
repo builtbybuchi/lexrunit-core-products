@@ -124,6 +124,9 @@ jobs:
             echo "" >> pyproject.toml
             echo "[dependency-groups]" >> pyproject.toml
             echo "dev = [\"workers-py\", \"workers-runtime-sdk\"]" >> pyproject.toml
+            
+            # pywrangler will error out if requirements.txt exists
+            mv requirements.txt requirements.txt.bak
           fi
           
           # Ensure there's a main.py entrypoint at root
