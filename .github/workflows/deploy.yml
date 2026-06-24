@@ -109,5 +109,26 @@ jobs:
           FULL_PROJECT_NAME="${{ env.CF_PROJECT_NAME }}${{ env.PROJECT_ENV_SUFFIX }}"
           echo "Deploying to $FULL_PROJECT_NAME on Cloudflare Workers..."
           
-          # Deploying as a worker (assuming project has a wrangler.toml or is compatible with direct deployment)
-          doppler run -- npx wrangler deploy --name "$FULL_PROJECT_NAME" --compatibility-date 2026-06-24
+          # Auto-generate wrangler.toml for Python Workers if not present
+          if [ ! -f "wrangler.toml" ]; then
+            echo "Creating wrangler.toml for Python Worker..."
+            cat <<EOF > wrangler.toml
+name = "$FULL_PROJECT_NAME"
+compatibility_date = "2026-06-24"
+compatibility_flags = ["python_workers"]
+EOF
+            
+            # Ensure there's a main.py entrypoint at root
+            if [ ! -f "main.py" ]; then
+              if [ -f "app/main.py" ]; then
+                echo "from app.main import app" > main.py
+                echo "__all__ = ['app']" >> main.py
+                echo "main = \"main.py\"" >> wrangler.toml
+              fi
+            else
+              echo "main = \"main.py\"" >> wrangler.toml
+            fi
+          fi
+          
+          # Deploying as a worker
+          doppler run -- npx wrangler deploy
