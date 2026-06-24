@@ -118,8 +118,8 @@ jobs:
             echo "version = \"0.1.0\"" >> pyproject.toml
             echo "requires-python = \">=3.12\"" >> pyproject.toml
             echo "dependencies = [" >> pyproject.toml
-            # Read requirements.txt, ignore comments and empty lines, strip whitespace
-            grep -v '^\s*#' requirements.txt | grep -v '^\s*$' | awk '{print "  \"" $1 "\","}' >> pyproject.toml
+            # Read requirements.txt, ignore comments/empty lines, strip version constraints
+            grep -v '^\s*#' requirements.txt | grep -v '^\s*$' | sed 's/[=><].*//' | awk '{print "  \"" $1 "\","}' >> pyproject.toml
             echo "]" >> pyproject.toml
             echo "" >> pyproject.toml
             echo "[dependency-groups]" >> pyproject.toml
