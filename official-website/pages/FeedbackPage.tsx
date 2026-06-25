@@ -100,8 +100,8 @@ const FeedbackPage: React.FC = () => {
                                     >
                                         <option value="general">General Feedback</option>
                                         <option value="dr-andre">Dr. Andre</option>
-                                        <option value="lexcare-hms">LexCare HMS</option>
-                                        <option value="lexcare-patients">LexCare Patient App</option>
+                                        <option value="lexcare-hms">L'Hopital</option>
+                                        <option value="lexcare-patients">L'Hopital</option>
                                         <option value="website">Website Experience</option>
                                     </select>
                                 </div>

@@ -41,11 +41,11 @@ const AboutPage: React.FC = () => {
               <p className="text-gray-600 leading-relaxed mb-4 text-lg">
                 Lexrunit began with a simple yet powerful idea: hospitals should have strong, modern and efficient
                 tools to streamline operations, and patients should be able to access healthcare services easily.
-                
+
               </p>
               <p className="text-gray-600 leading-relaxed text-lg">
                 Our journey is defined by a relentless pursuit of excellence. We saw the gaps in existing digital
-                solutions—clunky interfaces, unreliable systems, expensive to run and maintain and lack of 
+                solutions—clunky interfaces, unreliable systems, expensive to run and maintain and lack of
                 support—and we set out to fill them.
                 Today, we are proud to be a trusted partner to health institutions looking to embrace the future.
               </p>
@@ -65,8 +65,8 @@ const AboutPage: React.FC = () => {
               </div>
               <h3 className="text-2xl font-bold text-lex-dark-blue mb-4">Our Mission</h3>
               <p className="text-gray-600 text-lg leading-relaxed">
-                To engineer a unified global ecosystem of agile software, precision hardware, 
-                and next-generation infrastructure that redefines the standards of healthcare 
+                To engineer a unified global ecosystem of agile software, precision hardware,
+                and next-generation infrastructure that redefines the standards of healthcare
                 and enterprise efficiency.
               </p>
             </div>
@@ -79,7 +79,7 @@ const AboutPage: React.FC = () => {
               <h3 className="text-2xl font-bold text-lex-dark-blue mb-4">Our Vision</h3>
               <p className="text-gray-600 text-lg leading-relaxed">
                 To pioneer a seamless future where technology and care are one—connecting everything
-                from personal wearables to smart hospitals into a single, intelligent, and universal 
+                from personal wearables to smart hospitals into a single, intelligent, and universal
                 experience.
               </p>
             </div>
@@ -123,16 +123,16 @@ const AboutPage: React.FC = () => {
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-lex-dark-blue mb-4">Meet the Leadership</h2>
             <p className="text-gray-600 max-w-2xl mx-auto text-lg">
-              The visionary minds steering LexRunIt towards a future of limitless possibilities.
+              The visionary minds steering Lexrunit towards a future of limitless possibilities.
             </p>
           </div>
 
           <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            
+
             <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group">
               <div className="h-64 overflow-hidden bg-gray-200">
                 <img
-                  src="https://storage.lexrunit.com/v1/storage/buckets/website-images/files/693614d1000d7bc41c0a/view?project=68e67ffd0007ce1f504f"
+                  src="https://res.cloudinary.com/dlvffw5wt/image/upload/f_auto/q_auto/WhatsApp_Image_2026-06-25_at_2.48.49_PM_1_jqij0s.jpg"
                   alt="Maduabuchi Onah"
                   className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-110"
                 />
@@ -146,11 +146,11 @@ const AboutPage: React.FC = () => {
               </div>
             </div>
 
-         
+
             <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group">
               <div className="h-64 overflow-hidden bg-gray-200">
                 <img
-                  src="https://storage.lexrunit.com/v1/storage/buckets/website-images/files/693614d1000d7bc41c0a/view?project=68e67ffd0007ce1f504f"
+                  src="https://res.cloudinary.com/dlvffw5wt/image/upload/f_auto/q_auto/Screenshot_2026-06-25_14-51-29_r9gasv.png"
                   alt="Ugwuoke Chinecherem Sussan"
                   className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-110"
                 />
@@ -159,16 +159,16 @@ const AboutPage: React.FC = () => {
                 <h3 className="text-2xl font-bold text-lex-dark-blue mb-1">Ugwuoke Chinecherem</h3>
                 <p className="text-lex-med-blue font-semibold mb-4">Co-founder & Medical Expert</p>
                 <p className="text-gray-600 text-sm">
-                  Overseeing the clinical useability and appropriateness of the technologies, ensuring it improves hospital operation and help patients. 
+                  Overseeing the clinical useability and appropriateness of the technologies, ensuring it improves hospital operation and help patients.
                 </p>
               </div>
             </div>
 
-            
+
             <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group">
               <div className="h-64 overflow-hidden bg-gray-200">
                 <img
-                  src="https://storage.lexrunit.com/v1/storage/buckets/website-images/files/693614d1000d7bc41c0a/view?project=68e67ffd0007ce1f504f"
+                  src="https://res.cloudinary.com/dlvffw5wt/image/upload/v1782397503/d7958cb8-fa87-44b3-aea1-b1ab82a0cb81.png"
                   alt="Nwankwo Benson"
                   className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-110"
                 />
@@ -178,6 +178,40 @@ const AboutPage: React.FC = () => {
                 <p className="text-lex-med-blue font-semibold mb-4">Software Engineer</p>
                 <p className="text-gray-600 text-sm">
                   Leading our engineering teams to build robust, scalable, and cutting-edge software solutions.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group">
+              <div className="h-64 overflow-hidden bg-gray-200">
+                <img
+                  src="https://res.cloudinary.com/dlvffw5wt/image/upload/f_auto/q_auto/1776861432272_mgjf8o.png"
+                  alt="Chinaza Chinyere"
+                  className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-110"
+                />
+              </div>
+              <div className="p-8 text-center">
+                <h3 className="text-2xl font-bold text-lex-dark-blue mb-1">Chinaza Chinyere</h3>
+                <p className="text-lex-med-blue font-semibold mb-4">Software Engineer</p>
+                <p className="text-gray-600 text-sm">
+                  A dynamic full-stack engineer with skills across different programming knowledge and deep attention to details.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group">
+              <div className="h-64 overflow-hidden bg-gray-200">
+                <img
+                  src="https://res.cloudinary.com/dlvffw5wt/image/upload/f_auto/q_auto/copy_of_whatsapp_image_2026-06-25_at_24849_pm_jxvikf.jpg"
+                  alt="Tinevimbo Sagonda"
+                  className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-110"
+                />
+              </div>
+              <div className="p-8 text-center">
+                <h3 className="text-2xl font-bold text-lex-dark-blue mb-1">Tinevimbo Sagonda</h3>
+                <p className="text-lex-med-blue font-semibold mb-4">Software Engineer</p>
+                <p className="text-gray-600 text-sm">
+                  Experienced software engineer and Graphic Designer with deep interest in AI and Robotics.
                 </p>
               </div>
             </div>

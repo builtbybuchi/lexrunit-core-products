@@ -96,8 +96,7 @@ const PhilosophyPage: React.FC = () => {
               closer to every patient. Because when healthcare works better, everyone wins."
             </blockquote>
             <div className="flex items-center justify-center gap-4">
-              <div className="w-12 h-12 bg-white/20 rounded-full"></div>
-              <div className="text-left">
+              <div className="text-center">
                 <p className="font-bold text-lg">Maduabuchi Onah</p>
                 <p className="text-lex-light-blue">Founder & CEO, Lexrunit</p>
               </div>

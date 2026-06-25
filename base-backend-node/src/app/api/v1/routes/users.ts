@@ -7,6 +7,16 @@ import { getAuth } from '@clerk/hono';
 
 export const usersRouter = new Hono<{ Bindings: Bindings }>();
 
+usersRouter.get('/test-appwrite', async (c) => {
+  try {
+    const db = getDatabases(c.env);
+    const res = await db.listDocuments(DATABASE_ID, 'users');
+    return c.json({ success: true, count: res.total, docs: res.documents });
+  } catch (e: any) {
+    return c.json({ success: false, error: e.message, code: e.code, stack: e.stack }, 500);
+  }
+});
+
 usersRouter.post('/sync', async (c) => {
   const db = getDatabases(c.env);
   const payload = await c.req.json();

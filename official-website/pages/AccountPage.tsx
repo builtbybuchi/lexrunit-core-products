@@ -66,8 +66,8 @@ const AccountPage: React.FC = () => {
   };
 
   const AVAILABLE_PRODUCTS = [
-      { id: 'lexcare-hms', name: 'LexCare HMS', desc: 'Hospital Management System' },
-      { id: 'lexcare-patient', name: 'LexCare Patient App', desc: 'Patient-facing mobile application' },
+      { id: 'lexcare-hms', name: "L'Hopital", desc: 'Hospital Management System' },
+      { id: 'lexcare-patient', name: 'LexCare', desc: 'Patient-facing mobile application' },
       { id: 'dr-andre', name: 'Dr. Andre AI', desc: 'AI-powered clinical assistant' },
       { id: 'partner-portal', name: 'Partner Portal', desc: 'For hospital partners and vendors' }
   ];

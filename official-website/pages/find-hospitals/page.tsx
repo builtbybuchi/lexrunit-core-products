@@ -105,9 +105,9 @@ export default function FindHospitalsPage() {
                             className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-lex-med-blue focus:border-transparent outline-none"
                         >
                             <option value="">All Products</option>
-                            <option value="lexcare-hms">LexCare HMS</option>
+                            <option value="lexcare-hms">L'Hopital</option>
                             <option value="dr-andre">Dr. Andre</option>
-                            <option value="lexcare-patients">Patient App</option>
+                            <option value="lexcare-patients">L'Hopital</option>
                         </select>
                     </div>
                 </div>

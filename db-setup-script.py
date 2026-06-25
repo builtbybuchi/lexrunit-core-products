@@ -207,6 +207,8 @@ WEBSITE_COLLECTIONS = [
         'name': 'HIGS Events',
         'permissions': [],
         'attributes': [
+            {'key': 'title', 'type': 'string', 'size': 256, 'required': True},
+            {'key': 'description', 'type': 'string', 'size': 4000, 'required': True},
             {'key': 'date', 'type': 'string', 'size': 64, 'required': True},
             {'key': 'registrationUrl', 'type': 'url', 'required': True},
             {'key': 'isActive', 'type': 'boolean', 'required': False, 'default': False}

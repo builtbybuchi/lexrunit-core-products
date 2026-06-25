@@ -17,8 +17,8 @@ const Footer: React.FC = () => {
 
   const productLinks = [
     { name: 'Dr. Andre', href: '/products/dr-andre' },
-    { name: 'LexCare HMS', href: '/lexcare-hms' },
-    { name: 'Patient App', href: '/lexcare-patients' },
+    { name: "L'Hopital", href: '/lexcare-hms' },
+    { name: 'LexCare', href: '/lexcare-patients' },
     { name: 'Find Hospitals', href: '/find-hospitals' },
   ];
 

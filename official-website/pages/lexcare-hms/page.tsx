@@ -5,7 +5,7 @@ export default function FeaturesPage() {
   return (
     <main className="flex flex-col min-h-screen bg-white">
       <PageHeader
-        title="LexCare HMS"
+        title="L'Hopital"
         subtitle="AI-Powered Healthcare Management Platform with local, distributed and persistant DB"
       />
 
@@ -17,7 +17,7 @@ export default function FeaturesPage() {
             <span className="bg-lex-med-blue text-white px-2 md:px-4 rounded-md">modern</span> healthcare delivery.
           </p>
           <p className="mt-6 text-center text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
-            LexCare HMS integrates intelligent AI, comprehensive hospital management, and powerful analytics to revolutionize patient care.
+            L'Hopital integrates intelligent AI, comprehensive hospital management, and powerful analytics to revolutionize patient care.
           </p>
         </div>
       </section>

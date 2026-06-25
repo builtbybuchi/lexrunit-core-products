@@ -34,6 +34,8 @@ app.get('/', (c) => c.json({ message: 'Base Backend API', version: '0.1.0' }));
 // API V1 Group
 const api = new Hono<{ Bindings: Bindings }>();
 
+import { getDatabases, DATABASE_ID } from './services/appwriteClient';
+
 // Provide Clerk credentials from Cloudflare env bindings
 const clerkAuthMiddleware = async (c: any, next: any) => {
   const handler = clerkMiddleware({

@@ -6,7 +6,7 @@ interface HospitalCardProps {
     hospital: Hospital;
 }
 
-const ProductBadge = ({ product }: { product: string }) => {
+const ProductBadge: React.FC<{ product: string }> = ({ product }) => {
     let icon = null;
     let label = '';
     let colorClass = '';
@@ -14,7 +14,7 @@ const ProductBadge = ({ product }: { product: string }) => {
     switch (product) {
         case 'lexcare-hms':
             icon = <HospitalIcon />;
-            label = 'LexCare HMS';
+            label = "L'Hopital";
             colorClass = 'bg-lex-med-blue text-white';
             break;
         case 'dr-andre':
@@ -24,7 +24,7 @@ const ProductBadge = ({ product }: { product: string }) => {
             break;
         case 'lexcare-patients':
             icon = <PatientAppIcon />;
-            label = 'Patient App';
+            label = 'LexCare';
             colorClass = 'bg-lex-dark-blue text-white';
             break;
         default:

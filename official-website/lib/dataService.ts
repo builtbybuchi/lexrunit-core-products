@@ -30,7 +30,7 @@ const saveItems = <T>(key: string, items: T[]): void => {
 const initialJobs: Job[] = [
     { id: '1', title: 'Senior Frontend Engineer', location: 'Remote', description: 'We are looking for an experienced Frontend Engineer to help build our next-generation software solutions.' },
     { id: '2', title: 'Lead Backend Developer (Node.js)', location: 'Tech City Office', description: 'Join our team to lead the development of scalable and robust backend services for our suite of products.' },
-    { id: '3', title: 'Product Manager - LexCare', location: 'Remote', description: 'Drive the vision and execution for our flagship healthcare product, LexCare HMS.' }
+    { id: '3', title: 'Product Manager - LexCare', location: 'Remote', description: "Drive the vision and execution for our flagship healthcare product, L'Hopital." }
 ];
 
 // --- Public API ---

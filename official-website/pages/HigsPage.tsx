@@ -24,10 +24,6 @@ const HigsPage: React.FC = () => {
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-[#0546B6]/50 to-[#021488]"></div>
         
         <div className="container mx-auto px-6 relative z-10 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#C5ECF4] text-sm font-semibold mb-8">
-            <MonitorPlay className="w-4 h-4" />
-            Monthly Virtual Initiative
-          </div>
           
           <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight">
             Healthcare in the <br /> Global South <span className="text-[#0A91F9]">(HIGS)</span>
@@ -70,7 +66,7 @@ const HigsPage: React.FC = () => {
                 <strong className="text-[#0546B6]"> We learned this the hard way.</strong>
               </p>
               <p>
-                We spent six months building a medical product, consulted with doctors, but at the live hospital demo, 
+                We spent months building a medical product, consulted with doctors, but at the live hospital demo, 
                 it failed because the tech didn't match the chaotic reality of clinic operations. 
               </p>
               <p>
@@ -85,11 +81,24 @@ const HigsPage: React.FC = () => {
       {/* SECTION C: THE MISSION & THE AUDIENCE (BENTO GRID) */}
       <section className="py-24 bg-gray-50 border-y border-gray-100">
         <div className="container mx-auto px-6">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-4xl font-extrabold text-[#021488] mb-6">The Solution: Monthly Convergence</h2>
-            <p className="text-xl text-gray-600">
-              HIGS is a monthly virtual event designed to fix this disconnect. We bring the ecosystem together to learn, share, and align our efforts.
-            </p>
+          <div className="flex flex-col md:flex-row items-center gap-12 mb-20 max-w-6xl mx-auto">
+            <div className="md:w-1/2">
+              <img 
+                src="https://res.cloudinary.com/dlvffw5wt/image/upload/v1782393750/33b8cd75-3f9b-47d9-8227-a35bdd762ec5.png" 
+                alt="HIGS Ecosystem connecting Health Practitioners, Medical Students, Patients, and Software Engineers" 
+                className="w-full border border-[#0A91F9] shadow-2xl object-cover bg-white"
+              />
+            </div>
+            <div className="md:w-1/2">
+              <h2 className="text-sm font-bold uppercase text-[#0A91F9] tracking-widest mb-2">The Solution</h2>
+              <h3 className="text-3xl md:text-4xl font-extrabold text-[#021488] mb-6">Monthly Convergence</h3>
+              <p className="text-xl text-gray-600 leading-relaxed mb-4">
+                HIGS is a monthly virtual event designed to fix the dangerous disconnect between tech innovators and clinical realities.
+              </p>
+              <p className="text-gray-600 leading-relaxed text-lg">
+                We bring the entire ecosystem together—health practitioners, medical students, patients, and software engineers—to learn, share, and align our efforts so we can finally build tools that matter and save lives.
+              </p>
+            </div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
@@ -128,12 +137,12 @@ const HigsPage: React.FC = () => {
 
             {/* Card 4 */}
             <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow group">
-              <div className="w-14 h-14 bg-[#021488]/10 rounded-xl flex items-center justify-center text-[#021488] mb-6 group-hover:scale-110 transition-transform">
-                <Network className="w-7 h-7" />
+              <div className="w-14 h-14 bg-[#C5ECF4] rounded-xl flex items-center justify-center text-[#0546B6] mb-6 group-hover:scale-110 transition-transform">
+                <Stethoscope className="w-7 h-7" />
               </div>
-              <h3 className="text-2xl font-bold text-[#021488] mb-3">Infrastructure Partners</h3>
+              <h3 className="text-2xl font-bold text-[#021488] mb-3">Medical Students</h3>
               <p className="text-gray-600 leading-relaxed">
-                Like DraveUp, providing the backbone and support necessary to scale these vital technological interventions.
+                Gaining early exposure to clinical challenges and the future of healthtech, preparing them to lead the next generation of medical innovation.
               </p>
             </div>
           </div>
@@ -165,13 +174,12 @@ const HigsPage: React.FC = () => {
             </a>
             
             <a 
-              href="https://www.canva.com/design/DAHLjXTp_qI/_TiYnkjoRwZQCQ2SfODbCg/view?utlId=h8ad144e98d"
+              href="https://canva.link/scj5iywsobcbdl5"
               target="_blank" 
               rel="noopener noreferrer"
               className="bg-transparent border border-white/30 text-white hover:bg-white/10 px-10 py-5 rounded-full font-bold text-lg transition-all flex items-center gap-2"
             >
               Partner With Us
-              <BookOpen className="w-5 h-5" />
             </a>
           </div>
         </div>

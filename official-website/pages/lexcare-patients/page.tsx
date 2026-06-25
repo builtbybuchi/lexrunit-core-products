@@ -6,7 +6,7 @@ export default function LexCarePatientsPage() {
     return (
         <main className="flex flex-col min-h-screen bg-white">
             <PageHeader
-                title="LexCare Patients App"
+                title="LexCare"
                 subtitle="Your health, in your hands. Connect with hospitals and manage your records effortlessly."
             />
 
@@ -130,7 +130,7 @@ export default function LexCarePatientsPage() {
                 <div className="container mx-auto px-4 text-center">
                     <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to take control?</h2>
                     <p className="text-lex-light-blue text-lg mb-10 max-w-2xl mx-auto">
-                        Download the LexCare Patients App today and experience healthcare the way it should be.
+                        Download LexCare today and experience healthcare the way it should be.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <button className="bg-white text-lex-dark-blue px-8 py-3 rounded-full font-bold hover:bg-lex-light-blue transition-all">

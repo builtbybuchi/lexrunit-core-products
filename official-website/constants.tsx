@@ -3,16 +3,15 @@ import React from 'react';
 import { AiDoctorIcon, CommunityIcon, HospitalIcon, PatientAppIcon, RegistryIcon, SchoolIcon } from './components/icons/ProductIcons';
 
 export const navLinks = [
-  { id: 'about', title: 'About Us' },
-  { id: 'products', title: 'Products' },
-  { id: 'news', title: 'News' },
+  { id: 'lexcare-hms', title: "L'hopital" },
+  { id: 'products/dr-andre', title: 'Dr. Andre' },
 ];
 
 export const products = [
   {
     id: 'lexcare-hms',
     icon: <HospitalIcon />,
-    title: 'LexCare HMS',
+    title: "L'hopital",
     description: 'A comprehensive Hospital Management System for digitizing and automating medical processes with agility.',
     imageSrc: 'https://res.cloudinary.com/dlvffw5wt/image/upload/q_auto/f_auto/v1771806699/3_bcjbtw.png',
     href: '/lexcare-hms',
@@ -20,7 +19,7 @@ export const products = [
   {
     id: 'lexcare-patients',
     icon: <PatientAppIcon />,
-    title: 'LexCare Patients App',
+    title: 'LexCare',
     description: 'Empowering patients by providing easy and direct access to hospital services and their health records.',
     imageSrc: 'https://res.cloudinary.com/dlvffw5wt/image/upload/q_auto/f_auto/v1771806698/1_qqwqjt.png',
     href: '/lexcare-patients',
@@ -38,7 +37,7 @@ export const products = [
     icon: <HospitalIcon />,
     title: 'Partner Portal',
     description: 'Join our ecosystem as a partner hospital. Manage your profile, view leads, and streamline your patient intake process.',
-    imageSrc: 'https://res.cloudinary.com/dlvffw5wt/image/upload/q_auto/f_auto/v1771806699/3_bcjbtw.png',
+    imageSrc: 'https://res.cloudinary.com/dlvffw5wt/image/upload/v1771801535/cropped_rkyltz.png',
     href: '/partner',
   },
 ];

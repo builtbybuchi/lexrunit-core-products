@@ -85,6 +85,14 @@ type FeedbackEntry = Models.Document & {
     createdAt: string;
 };
 
+type HigsEvent = Models.Document & {
+    title: string;
+    description: string;
+    date: string;
+    registrationUrl: string;
+    isActive: boolean;
+};
+
 const AdminPage: React.FC = () => {
     const { user, isLoaded, isSignedIn } = useUser();
     const { getToken } = useAuth();
@@ -148,6 +156,7 @@ const AdminPage: React.FC = () => {
     const [jobs, setJobs] = useState<Job[]>([]);
     const [waitlist, setWaitlist] = useState<WaitlistEntry[]>([]);
     const [feedback, setFeedback] = useState<FeedbackEntry[]>([]);
+    const [higsEvents, setHigsEvents] = useState<HigsEvent[]>([]);
 
     // Hospital Registration Form State
     const [hospitalForm, setHospitalForm] = useState({
@@ -165,8 +174,8 @@ const AdminPage: React.FC = () => {
 
     // Blog/News Editor State
     const [isEditingContent, setIsEditingContent] = useState(false);
-    const [contentType, setContentType] = useState<'blog' | 'news' | null>(null);
-    const [editingItem, setEditingItem] = useState<BlogPost | NewsArticle | null>(null);
+    const [contentType, setContentType] = useState<'blog' | 'news' | 'higs' | null>(null);
+    const [editingItem, setEditingItem] = useState<BlogPost | NewsArticle | HigsEvent | null>(null);
     const [contentForm, setContentForm] = useState({
         title: '',
         slug: '',
@@ -175,7 +184,12 @@ const AdminPage: React.FC = () => {
         author: '',
         image: '',
         tags: '',
-        publishedAt: new Date().toISOString().slice(0, 16)
+        publishedAt: new Date().toISOString().slice(0, 16),
+        // higs specific
+        description: '',
+        date: '',
+        registrationUrl: '',
+        isActive: false
     });
 
     // Job Editor State
@@ -252,6 +266,9 @@ const AdminPage: React.FC = () => {
             } else if (activeTab === 'feedback') {
                 const res = await apiDb.listDocuments(DATABASE_ID, COLLECTIONS.FEEDBACK, [Query.orderDesc('$createdAt')]);
                 setFeedback(res.documents as unknown as FeedbackEntry[]);
+            } else if (activeTab === 'higs') {
+                const res = await apiDb.listDocuments(DATABASE_ID, COLLECTIONS.HIGS_EVENTS, [Query.orderDesc('date')]);
+                setHigsEvents(res.documents as unknown as HigsEvent[]);
             }
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -409,31 +426,48 @@ const AdminPage: React.FC = () => {
         if (!contentType) return;
 
         try {
-            const payload: any = {
-                title: contentForm.title,
-                slug: contentForm.slug,
-                content: contentForm.content,
-                excerpt: contentForm.excerpt,
-                image: contentForm.image,
-                publishedAt: new Date(contentForm.publishedAt).toISOString()
-            };
+            let payload: any = {};
+            let collectionId = '';
 
-            if (contentType === 'blog') {
-                payload.author = contentForm.author;
-                payload.tags = contentForm.tags.split(',').map(t => t.trim()).filter(t => t);
+            if (contentType === 'higs') {
+                payload = {
+                    title: contentForm.title,
+                    description: contentForm.description,
+                    date: contentForm.date,
+                    registrationUrl: contentForm.registrationUrl,
+                    isActive: contentForm.isActive
+                };
+                collectionId = COLLECTIONS.HIGS_EVENTS;
+            } else {
+                payload = {
+                    title: contentForm.title,
+                    slug: contentForm.slug,
+                    content: contentForm.content,
+                    excerpt: contentForm.excerpt,
+                    image: contentForm.image,
+                    publishedAt: new Date(contentForm.publishedAt).toISOString()
+                };
+
+                if (contentType === 'blog') {
+                    payload.author = contentForm.author;
+                    payload.tags = contentForm.tags.split(',').map(t => t.trim()).filter(t => t);
+                    collectionId = COLLECTIONS.BLOGS;
+                } else if (contentType === 'news') {
+                    collectionId = COLLECTIONS.NEWS;
+                }
             }
 
             if (editingItem) {
                 await apiDb.updateDocument(
                     DATABASE_ID,
-                    contentType === 'blog' ? COLLECTIONS.BLOGS : COLLECTIONS.NEWS,
+                    collectionId,
                     editingItem.$id,
                     payload
                 );
             } else {
                 await apiDb.createDocument(
                     DATABASE_ID,
-                    contentType === 'blog' ? COLLECTIONS.BLOGS : COLLECTIONS.NEWS,
+                    collectionId,
                     ID.unique(),
                     payload
                 );
@@ -548,7 +582,15 @@ const AdminPage: React.FC = () => {
                             {contentType === 'higs' ? (
                                 <>
                                     <div className="mb-4">
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Event Title</label>
+                                        <input type="text" value={contentForm.title} onChange={e => setContentForm({...contentForm, title: e.target.value})} className="w-full border rounded p-2 focus:ring focus:ring-lex-med-blue" required placeholder="Event Title" />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                        <textarea value={contentForm.description} onChange={e => setContentForm({...contentForm, description: e.target.value})} className="w-full border rounded p-2 focus:ring focus:ring-lex-med-blue" required placeholder="Event Description" rows={4} />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Date Display Text</label>
                                         <input type="text" value={contentForm.date} onChange={e => setContentForm({...contentForm, date: e.target.value})} className="w-full border rounded p-2 focus:ring focus:ring-lex-med-blue" required placeholder="e.g. Next Saturday, 10am GMT" />
                                     </div>
                                     <div className="mb-4">
@@ -654,7 +696,10 @@ const AdminPage: React.FC = () => {
                                 />
                             </div>
 
-                            <div className="flex justify-end gap-4">
+                            </>
+                            )}
+                            
+                            <div className="flex justify-end gap-4 mt-6">
                                 <button
                                     type="button"
                                     onClick={closeEditor}
@@ -669,8 +714,6 @@ const AdminPage: React.FC = () => {
                                     Save {contentType === 'blog' ? 'Post' : contentType === 'news' ? 'Article' : 'Event'}
                                 </button>
                             </div>
-                            </>
-                            )}
                         </form>
                     </div>
                 </div>
@@ -955,7 +998,7 @@ return (
                                             <div className="mt-2 flex flex-wrap gap-2">
                                                 {h.products?.map(p => (
                                                     <span key={p} className="text-xs bg-lex-light-blue/20 text-lex-med-blue px-2 py-1 rounded">
-                                                        {p === 'lexcare-hms' ? 'HMS' : p === 'dr-andre' ? 'Dr. Andre' : 'Patient App'}
+                                                        {p === 'lexcare-hms' ? "L'Hopital" : p === 'dr-andre' ? 'Dr. Andre' : "L'Hopital"}
                                                     </span>
                                                 ))}
                                             </div>
@@ -988,7 +1031,7 @@ return (
                                     <p className="text-sm font-medium text-gray-700">Products Used:</p>
                                     <label className="flex items-center space-x-2">
                                         <input type="checkbox" value="lexcare-hms" onChange={handleProductChange} checked={hospitalForm.products.includes('lexcare-hms')} />
-                                        <span className="text-sm">LexCare HMS</span>
+                                        <span className="text-sm">L'Hopital</span>
                                     </label>
                                     <label className="flex items-center space-x-2">
                                         <input type="checkbox" value="dr-andre" onChange={handleProductChange} checked={hospitalForm.products.includes('dr-andre')} />
@@ -996,7 +1039,7 @@ return (
                                     </label>
                                     <label className="flex items-center space-x-2">
                                         <input type="checkbox" value="lexcare-patients" onChange={handleProductChange} checked={hospitalForm.products.includes('lexcare-patients')} />
-                                        <span className="text-sm">Patient App</span>
+                                        <span className="text-sm">L'Hopital</span>
                                     </label>
                                 </div>
 
@@ -1166,6 +1209,63 @@ return (
                                         <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
                                             <span className="text-xs text-gray-500">{new Date(f.$createdAt).toLocaleString()}</span>
                                             <button onClick={() => handleDelete(COLLECTIONS.FEEDBACK, f.$id)} className="text-red-500 hover:text-red-700 text-sm">Delete</button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
+                {activeTab === 'higs' && (
+                    <div>
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-lg font-bold">HIGS Events</h2>
+                            <button
+                                onClick={() => {
+                                    setEditingItem(null);
+                                    setContentType('higs');
+                                    setContentForm({
+                                        title: '', slug: '', content: '', excerpt: '', author: '', image: '', tags: '', publishedAt: new Date().toISOString().slice(0, 16),
+                                        description: '', date: '', registrationUrl: '', isActive: false
+                                    });
+                                    setIsEditingContent(true);
+                                }}
+                                className="bg-lex-dark-blue text-white px-4 py-2 rounded font-bold hover:bg-lex-med-blue"
+                            >
+                                Add HIGS Event
+                            </button>
+                        </div>
+                        {higsEvents.length === 0 ? (
+                            <p className="text-gray-500">No HIGS events found.</p>
+                        ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {higsEvents.map((event) => (
+                                    <div key={event.$id} className={`border ${event.isActive ? 'border-green-500 bg-green-50' : 'border-gray-200'} rounded-lg p-4 hover:shadow-md transition-shadow`}>
+                                        <div className="flex justify-between items-start mb-2">
+                                            <h3 className="font-bold text-lg text-lex-dark-blue">{event.title}</h3>
+                                            {event.isActive && <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full font-bold">Active</span>}
+                                        </div>
+                                        <p className="text-gray-600 text-sm mb-3">{event.description}</p>
+                                        <div className="flex flex-col gap-1 text-sm text-gray-500 mb-4">
+                                            <span><strong>Date:</strong> {event.date}</span>
+                                            <span><strong>URL:</strong> <a href={event.registrationUrl} target="_blank" rel="noopener noreferrer" className="text-lex-med-blue underline hover:text-lex-dark-blue truncate block max-w-[200px]">{event.registrationUrl}</a></span>
+                                        </div>
+                                        <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-gray-100">
+                                            <button
+                                                onClick={() => {
+                                                    setEditingItem(event);
+                                                    setContentType('higs');
+                                                    setContentForm({
+                                                        title: event.title, slug: '', content: '', excerpt: '', author: '', image: '', tags: '', publishedAt: new Date().toISOString().slice(0, 16),
+                                                        description: event.description, date: event.date.slice(0, 16), registrationUrl: event.registrationUrl, isActive: event.isActive
+                                                    });
+                                                    setIsEditingContent(true);
+                                                }}
+                                                className="text-lex-med-blue hover:text-lex-dark-blue text-sm font-medium"
+                                            >
+                                                Edit
+                                            </button>
+                                            <button onClick={() => handleDelete(COLLECTIONS.HIGS_EVENTS, event.$id)} className="text-red-500 hover:text-red-700 text-sm font-medium">Delete</button>
                                         </div>
                                     </div>
                                 ))}

@@ -24,7 +24,7 @@ const PatientAppSection: React.FC = () => {
 
                         <p className="text-lg text-gray-600 mb-8 leading-relaxed max-w-xl">
                             Book appointments, access medical records, and consult with doctors—all from your smartphone.
-                            Experience the future of patient-centric care with the LexCare Patient App.
+                            Experience the future of patient-centric care with the L'Hopital.
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-4">

@@ -22,7 +22,7 @@ const HMSSection: React.FC = () => {
                         </h2>
 
                         <p className="text-lg text-lex-light-blue mb-8 leading-relaxed max-w-xl">
-                            LexCare HMS is an AI-powered platform designed to optimize patient care, manage resources efficiently, and reduce administrative burdens.
+                            L'Hopital is an AI-powered platform designed to optimize patient care, manage resources efficiently, and reduce administrative burdens.
                             Join the network of modern hospitals delivering superior healthcare.
                         </p>
 
