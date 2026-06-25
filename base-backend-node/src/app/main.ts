@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { rateLimiter, requireAuth } from './core/dependencies';
 import { Bindings } from './core/types';
-import { clerkMiddleware } from '@hono/clerk-auth';
+import { clerkMiddleware } from '@clerk/hono';
 
 import { hospitalsRouter } from './api/v1/routes/hospitals';
 import { careersRouter } from './api/v1/routes/careers';

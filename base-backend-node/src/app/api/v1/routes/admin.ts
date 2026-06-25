@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import { getDatabases, DATABASE_ID } from '../../../services/appwriteClient';
 import { Query, ID } from 'node-appwrite';
 import { Bindings } from '../../../core/types';
-import { getAuth } from '@hono/clerk-auth';
+import { getAuth } from '@clerk/hono';
 
 export const adminRouter = new Hono<{ Bindings: Bindings }>();
 

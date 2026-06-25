@@ -3,7 +3,7 @@ import { getDatabases, DATABASE_ID } from '../../../services/appwriteClient';
 import { Query, ID } from 'node-appwrite';
 import { Bindings } from '../../../core/types';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
-import { getAuth } from '@hono/clerk-auth';
+import { getAuth } from '@clerk/hono';
 
 export const usersRouter = new Hono<{ Bindings: Bindings }>();
 
