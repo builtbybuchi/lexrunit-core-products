@@ -17,8 +17,8 @@ aiRouter.post('/firecrawl-webhook', async (c) => {
     }
 
     if (documents.length === 0) {
-      console.error("Firecrawl job failed or returned no data.");
-      return c.json({ error: "Invalid payload or no documents found" }, 400);
+      console.log(`Ack Firecrawl event (type: ${payload.type || 'unknown'}) - no markdown data found in this payload.`);
+      return c.json({ success: true, message: "Acknowledged event" }, 200);
     }
 
     const qstash = new QStashClient({
