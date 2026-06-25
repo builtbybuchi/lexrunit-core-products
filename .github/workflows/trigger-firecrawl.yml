@@ -12,6 +12,8 @@ jobs:
   trigger-scrape:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
       - name: Install Doppler CLI
         uses: dopplerhq/cli-action@v3
         
