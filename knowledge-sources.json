@@ -1,10 +1,67 @@
 [
   {
+    
     "type": "scrape",
     "url": "https://nursingcollege.mespune.in/wp-content/uploads/2023/04/Davidsons-Principles-Practice-of-Medicine-PDFDrive.com-.pdf"
   },
   {
+    "type": "scrape",
+    "url": "https://jasu.kg/wp-content/uploads/2024/04/Harrisons-Principles-of-Internal-Medicine-20th-Edition-Vol.1-Vol.2-Part-1.pdf"
+  },
+  {
+    "type": "scrape",
+    "url": "https://jasu.kg/wp-content/uploads/2024/04/Nelson-essentials-of-pediatrics.pdf"
+  },
+  {
+    "type": "scrape",
+    "url": "https://e.itg.be/wikitropica/Lecture%20notes%20part%20I.pdf"
+  },
+  {
+    "type": "scrape",
+    "url": "https://iris.who.int/server/api/core/bitstreams/8f110da0-22e6-4ef1-90e4-c9f1b7daa363/content"
+  },
+  {
+    "type": "scrape",
+    "url": "https://iris.who.int/server/api/core/bitstreams/1a86af83-37b7-4fbc-8936-d1a1ed6ae30c/content"
+  },
+  {
     "type": "crawl",
     "url": "https://www.who.int/teams/maternal-newborn-child-adolescent-health-and-ageing/child-health/integrated-management-of-childhood-illness"
+  },
+  {
+    "type": "crawl",
+    "url": "https://www.nice.org.uk/"
+  },
+  {
+    "type": "crawl",
+    "url": "https://www.facs.org/"
+  },
+  {
+    "type": "crawl",
+    "url": "https://www.who.int/publications/i/item/9789241549158"
+  },
+  {
+    "type": "crawl",
+    "url": "https://www.merckmanuals.com/home"
+  },
+  {
+    "type": "crawl",
+    "url": "https://www.merckmanuals.com/professional"
+  },
+  {
+    "type": "crawl",
+    "url": "https://www.acog.org/"
+  },
+  {
+    "type": "crawl",
+    "url": "https://www.acog.org/womens-health"
+  },
+  {
+    "type": "crawl",
+    "url": "https://www.acog.org/clinical"
+  },
+  {
+    "type": "crawl",
+    "url": "https://journals.lww.com/ogopen/Pages/default.aspx"
   }
 ]
