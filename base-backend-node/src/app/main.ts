@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { cors } from 'hono/cors';
 import { rateLimiter, requireAuth } from './core/dependencies';
 import { Bindings } from './core/types';
 import { clerkMiddleware } from '@clerk/hono';
@@ -15,6 +16,15 @@ import { higsRouter } from './api/v1/routes/higs';
 const app = new Hono<{ Bindings: Bindings }>();
 
 // Global Middlewares
+
+app.use('*', cors({
+  origin: (origin, c) => {
+    return origin || '*';
+  },
+  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowHeaders: ['Content-Type', 'Authorization', 'x-lexrunit-api-key'],
+  credentials: true,
+}));
 
 app.use('*', rateLimiter);
 
