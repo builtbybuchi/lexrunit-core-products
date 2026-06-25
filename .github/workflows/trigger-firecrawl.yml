@@ -27,12 +27,17 @@ jobs:
               TYPE=$(echo "$item" | jq -r ".type")
               URL=$(echo "$item" | jq -r ".url")
               
+              # Strip trailing /api/v1 and trailing slash to prevent duplicate paths
+              CLEAN_URL=${VITE_BASE_BACKEND_URL%/api/v1}
+              CLEAN_URL=${CLEAN_URL%/}
+              WEBHOOK_URL="${CLEAN_URL}/api/v1/ai/firecrawl-webhook"
+              
               if [ "$TYPE" = "crawl" ]; then
                 ENDPOINT="https://api.firecrawl.dev/v1/crawl"
-                PAYLOAD="{\"url\": \"$URL\", \"webhook\": \"${VITE_BASE_BACKEND_URL}/api/v1/ai/firecrawl-webhook\"}"
+                PAYLOAD="{\"url\": \"$URL\", \"webhook\": \"$WEBHOOK_URL\"}"
               else
                 ENDPOINT="https://api.firecrawl.dev/v1/batch/scrape"
-                PAYLOAD="{\"urls\": [\"$URL\"], \"formats\": [\"markdown\"], \"webhook\": \"${VITE_BASE_BACKEND_URL}/api/v1/ai/firecrawl-webhook\"}"
+                PAYLOAD="{\"urls\": [\"$URL\"], \"formats\": [\"markdown\"], \"webhook\": \"$WEBHOOK_URL\"}"
               fi
               
               echo "Triggering Firecrawl $TYPE for $URL..."
