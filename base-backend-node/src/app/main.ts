@@ -12,6 +12,7 @@ import { contactRouter } from './api/v1/routes/contact';
 import { usersRouter } from './api/v1/routes/users';
 import { adminRouter } from './api/v1/routes/admin';
 import { higsRouter } from './api/v1/routes/higs';
+import { aiRouter } from './api/v1/routes/ai';
 
 const app = new Hono<{ Bindings: Bindings }>();
 
@@ -56,6 +57,7 @@ api.route('/contact', contactRouter);
 api.route('/users', usersRouter);
 api.route('/admin', adminRouter);
 api.route('/higs', higsRouter);
+api.route('/ai', aiRouter);
 
 // Mount API
 app.route('/api/v1', api);

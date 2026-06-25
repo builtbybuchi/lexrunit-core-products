@@ -5,4 +5,10 @@ export type Bindings = {
   APPWRITE_API_KEY: string
   RESEND_API_KEY: string
   RESEND_FROM_EMAIL: string
+  QSTASH_TOKEN: string
+  QSTASH_CURRENT_SIGNING_KEY: string
+  QSTASH_NEXT_SIGNING_KEY: string
+  UPSTASH_VECTOR_REST_URL: string
+  UPSTASH_VECTOR_REST_TOKEN: string
+  APP_URL: string
 }

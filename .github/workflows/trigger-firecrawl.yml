@@ -12,13 +12,35 @@ jobs:
   trigger-scrape:
     runs-on: ubuntu-latest
     steps:
+      - name: Install Doppler CLI
+        uses: dopplerhq/cli-action@v3
+        
       - name: Trigger Firecrawl Async Scrape
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
         run: |
-          curl -X POST "https://api.firecrawl.dev/v1/scrape/async" \
-          -H "Authorization: Bearer ${{ secrets.FIRECRAWL_API_KEY }}" \
-          -H "Content-Type: application/json" \
-          -d '{
-            "url": "https://example.com/2000-page-medical-textbook.pdf",
-            "formats": ["markdown"],
-            "webhook": "https://dr-andre-rag.your-username.workers.dev/api/firecrawl-webhook"
-          }'
+          doppler run --config prd --project lexrunit -- sh -c '
+            # Parse the JSON array and loop over each entry
+            jq -c ".[]" knowledge-sources.json | while read -r item; do
+              TYPE=$(echo "$item" | jq -r ".type")
+              URL=$(echo "$item" | jq -r ".url")
+              
+              if [ "$TYPE" = "crawl" ]; then
+                ENDPOINT="https://api.firecrawl.dev/v1/crawl"
+                PAYLOAD="{\"url\": \"$URL\", \"webhook\": \"${VITE_BASE_BACKEND_URL}/api/v1/ai/firecrawl-webhook\"}"
+              else
+                ENDPOINT="https://api.firecrawl.dev/v1/scrape/async"
+                PAYLOAD="{\"url\": \"$URL\", \"formats\": [\"markdown\"], \"webhook\": \"${VITE_BASE_BACKEND_URL}/api/v1/ai/firecrawl-webhook\"}"
+              fi
+              
+              echo "Triggering Firecrawl $TYPE for $URL..."
+              curl -X POST "$ENDPOINT" \
+              -H "Authorization: Bearer $FIRECRAWL_API_KEY" \
+              -H "Content-Type: application/json" \
+              -d "$PAYLOAD"
+              
+              echo ""
+              # Sleep a few seconds to avoid hitting sudden rate limits if the file is large
+              sleep 2
+            done
+          '

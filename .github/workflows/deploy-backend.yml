@@ -1,0 +1,43 @@
+name: Deploy Base Backend to Cloudflare Workers
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'base-backend-node/**'
+  workflow_dispatch:
+
+jobs:
+  deploy-backend:
+    name: Deploy Backend
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Doppler CLI
+        uses: dopplerhq/cli-action@v3
+
+      - name: Install Dependencies
+        working-directory: ./base-backend-node
+        run: npm install
+
+      - name: Deploy to Cloudflare Workers
+        working-directory: ./base-backend-node
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+        run: |
+          echo "Deploying to lexrunit-base-backend on Cloudflare Workers..."
+          
+          # Sync all Doppler secrets securely to the Cloudflare Worker
+          doppler run --config prd --project lexrunit --command="doppler secrets download --no-file --format=json | npx wrangler secret bulk --name lexrunit-base-backend"
+          
+          # Deploy the Worker code
+          doppler run --config prd --project lexrunit --command="npx wrangler deploy --name lexrunit-base-backend"
