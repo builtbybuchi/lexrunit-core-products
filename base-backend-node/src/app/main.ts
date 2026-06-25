@@ -1,5 +1,4 @@
 import { Hono } from 'hono';
-import { cors } from 'hono/cors';
 import { rateLimiter, requireAuth } from './core/dependencies';
 import { Bindings } from './core/types';
 import { clerkMiddleware } from '@clerk/hono';
@@ -16,17 +15,6 @@ import { higsRouter } from './api/v1/routes/higs';
 const app = new Hono<{ Bindings: Bindings }>();
 
 // Global Middlewares
-app.use('*', cors({
-  origin: (origin) => {
-    if (!origin) return 'https://lexrunit.com';
-    if (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:')) return origin;
-    const allowed = ['https://lexrunit.com', 'https://www.lexrunit.com'];
-    return allowed.includes(origin) ? origin : 'https://lexrunit.com';
-  },
-  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowHeaders: ['Content-Type', 'Authorization', 'x-lexrunit-api-key'],
-  credentials: true,
-}));
 
 app.use('*', rateLimiter);
 
