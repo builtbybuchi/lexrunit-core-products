@@ -13,6 +13,7 @@ import { usersRouter } from './api/v1/routes/users';
 import { adminRouter } from './api/v1/routes/admin';
 import { higsRouter } from './api/v1/routes/higs';
 import { aiRouter } from './api/v1/routes/ai';
+import { whatsappRouter } from './api/v1/routes/whatsapp';
 
 const app = new Hono<{ Bindings: Bindings }>();
 
@@ -58,6 +59,7 @@ api.route('/users', usersRouter);
 api.route('/admin', adminRouter);
 api.route('/higs', higsRouter);
 api.route('/ai', aiRouter);
+api.route('/whatsapp', whatsappRouter);
 
 // Mount API
 app.route('/api/v1', api);

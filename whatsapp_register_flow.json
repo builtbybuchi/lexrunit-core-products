@@ -1,0 +1,83 @@
+{
+  "version": "3.1",
+  "data_api_version": "3.0",
+  "routing_model": {
+    "REGISTER_SCREEN": [
+      "TERMINAL_SCREEN"
+    ]
+  },
+  "screens": [
+    {
+      "id": "REGISTER_SCREEN",
+      "title": "LexCare Registration",
+      "terminal": false,
+      "data": {},
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "TextHeading",
+            "text": "Create Your Account"
+          },
+          {
+            "type": "TextBody",
+            "text": "Please provide your details to complete the setup of your LexCare profile."
+          },
+          {
+            "type": "TextInput",
+            "name": "full_name",
+            "label": "Full Name",
+            "required": true,
+            "input_type": "text"
+          },
+          {
+            "type": "TextInput",
+            "name": "email",
+            "label": "Email Address (Optional)",
+            "required": false,
+            "input_type": "email"
+          },
+          {
+            "type": "DatePicker",
+            "name": "dob",
+            "label": "Date of Birth",
+            "required": true
+          },
+          {
+            "type": "Dropdown",
+            "name": "gender",
+            "label": "Gender",
+            "required": true,
+            "data-source": [
+              {
+                "id": "male",
+                "title": "Male"
+              },
+              {
+                "id": "female",
+                "title": "Female"
+              },
+              {
+                "id": "other",
+                "title": "Other"
+              }
+            ]
+          },
+          {
+            "type": "Footer",
+            "label": "Complete Registration",
+            "on-click-action": {
+              "name": "complete",
+              "payload": {
+                "full_name": "${form.full_name}",
+                "email": "${form.email}",
+                "dob": "${form.dob}",
+                "gender": "${form.gender}"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

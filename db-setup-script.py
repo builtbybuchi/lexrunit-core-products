@@ -213,6 +213,33 @@ WEBSITE_COLLECTIONS = [
             {'key': 'registrationUrl', 'type': 'url', 'required': True},
             {'key': 'isActive', 'type': 'boolean', 'required': False, 'default': False}
         ]
+    },
+    {
+        'id': 'whatsapp_users',
+        'name': 'WhatsApp Users',
+        'permissions': [],
+        'attributes': [
+            {'key': 'wa_id', 'type': 'string', 'size': 50, 'required': True},
+            {'key': 'name', 'type': 'string', 'size': 128, 'required': False},
+            {'key': 'question_count', 'type': 'integer', 'required': False, 'default': 0},
+            {'key': 'is_subscribed', 'type': 'boolean', 'required': False, 'default': False},
+            {'key': 'is_registered', 'type': 'boolean', 'required': False, 'default': False},
+        ],
+        'indexes': [
+            {'key': 'wa_id_index', 'type': 'unique', 'attributes': ['wa_id']}
+        ]
+    },
+    {
+        'id': 'settings',
+        'name': 'Global Settings',
+        'permissions': [],
+        'attributes': [
+            {'key': 'key', 'type': 'string', 'size': 128, 'required': True},
+            {'key': 'value', 'type': 'string', 'size': 4000, 'required': True},
+        ],
+        'indexes': [
+            {'key': 'key_index', 'type': 'unique', 'attributes': ['key']}
+        ]
     }
 ]
 
@@ -338,6 +365,9 @@ def sync_collection(client, databases, col):
                 retry_operation(lambda: databases.create_datetime_attribute(DATABASE_ID, col['id'], attr['key'], attr['required'], default_val, is_array))
             elif attr['type'] == 'boolean':
                 retry_operation(lambda: databases.create_boolean_attribute(DATABASE_ID, col['id'], attr['key'], attr['required'], default_val, is_array))
+            elif attr['type'] == 'integer':
+                # Add support for integer attributes
+                retry_operation(lambda: databases.create_integer_attribute(DATABASE_ID, col['id'], attr['key'], attr['required'], -2147483648, 2147483647, default_val, is_array))
             
             print(f"   ➕ Attribute '{attr['key']}' bound.")
             time.sleep(0.1)

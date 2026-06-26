@@ -11,4 +11,7 @@ export type Bindings = {
   UPSTASH_VECTOR_REST_URL: string
   UPSTASH_VECTOR_REST_TOKEN: string
   APP_URL: string
+  SQUADCO_BASE_URL: string
+  SQUADCO_PUBLIC_KEY: string
+  SQUADCO_SECRET_KEY: string
 }

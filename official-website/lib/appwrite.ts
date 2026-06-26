@@ -22,6 +22,7 @@ export const COLLECTIONS = {
     WAITLIST: 'waitlist',
     FEEDBACK: 'feedback',
     HIGS_EVENTS: 'higs_events',
+    SETTINGS: 'settings',
 };
 
 export const BUCKET_ID = 'resumes';

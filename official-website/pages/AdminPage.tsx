@@ -144,7 +144,7 @@ const AdminPage: React.FC = () => {
 
     const [loading, setLoading] = useState(true);
     const [isAdmin, setIsAdmin] = useState(false);
-    const [activeTab, setActiveTab] = useState<'inquiries' | 'contacts' | 'subscriptions' | 'hospitals' | 'blogs' | 'news' | 'jobs' | 'waitlist' | 'feedback' | 'higs'>('inquiries');
+    const [activeTab, setActiveTab] = useState<'inquiries' | 'contacts' | 'subscriptions' | 'hospitals' | 'blogs' | 'news' | 'jobs' | 'waitlist' | 'feedback' | 'higs' | 'settings'>('inquiries');
 
     // Data states
     const [contacts, setContacts] = useState<Contact[]>([]);
@@ -157,6 +157,10 @@ const AdminPage: React.FC = () => {
     const [waitlist, setWaitlist] = useState<WaitlistEntry[]>([]);
     const [feedback, setFeedback] = useState<FeedbackEntry[]>([]);
     const [higsEvents, setHigsEvents] = useState<HigsEvent[]>([]);
+
+    // Settings State
+    const [botSettings, setBotSettings] = useState<{ id: string, price: string } | null>(null);
+    const [settingsForm, setSettingsForm] = useState({ subscription_price: '' });
 
     // Hospital Registration Form State
     const [hospitalForm, setHospitalForm] = useState({
@@ -269,13 +273,38 @@ const AdminPage: React.FC = () => {
             } else if (activeTab === 'higs') {
                 const res = await apiDb.listDocuments(DATABASE_ID, COLLECTIONS.HIGS_EVENTS, [Query.orderDesc('date')]);
                 setHigsEvents(res.documents as unknown as HigsEvent[]);
+            } else if (activeTab === 'settings') {
+                const res = await apiDb.listDocuments(DATABASE_ID, COLLECTIONS.SETTINGS);
+                const priceDoc = res.documents.find((d: any) => d.key === 'subscription_price');
+                if (priceDoc) {
+                    setBotSettings({ id: priceDoc.$id, price: priceDoc.value });
+                    setSettingsForm({ subscription_price: priceDoc.value });
+                } else {
+                    setBotSettings(null);
+                    setSettingsForm({ subscription_price: '5000' });
+                }
             }
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     };
 
-    // ... (Hospital handlers omitted for brevity, keeping existing ones if possible, but for replace_file_content I need to provide full content or careful chunks. Since I'm replacing the whole file effectively to restructure, I'll include them)
+    // Settings Update Handler
+    const handleSettingsSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            if (botSettings) {
+                await apiDb.updateDocument(DATABASE_ID, COLLECTIONS.SETTINGS, botSettings.id, { value: settingsForm.subscription_price });
+            } else {
+                await apiDb.createDocument(DATABASE_ID, COLLECTIONS.SETTINGS, ID.unique(), { key: 'subscription_price', value: settingsForm.subscription_price });
+            }
+            alert("Settings updated successfully!");
+            fetchData();
+        } catch (error) {
+            console.error("Failed to update settings", error);
+            alert("Failed to update settings");
+        }
+    };
 
     const handleRegisterHospital = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -860,6 +889,7 @@ return (
                 <button onClick={() => setActiveTab('waitlist')} className={`pb-2 px-4 font-medium whitespace-nowrap ${activeTab === 'waitlist' ? 'text-lex-med-blue border-b-2 border-lex-med-blue' : 'text-gray-500 hover:text-gray-700'}`}>Waitlist</button>
                 <button onClick={() => setActiveTab('feedback')} className={`pb-2 px-4 font-medium whitespace-nowrap ${activeTab === 'feedback' ? 'text-lex-med-blue border-b-2 border-lex-med-blue' : 'text-gray-500 hover:text-gray-700'}`}>Feedback</button>
                 <button onClick={() => setActiveTab('higs')} className={`pb-2 px-4 font-medium whitespace-nowrap ${activeTab === 'higs' ? 'text-lex-med-blue border-b-2 border-lex-med-blue' : 'text-gray-500 hover:text-gray-700'}`}>HIGS Events</button>
+                <button onClick={() => setActiveTab('settings')} className={`pb-2 px-4 font-medium whitespace-nowrap ${activeTab === 'settings' ? 'text-lex-med-blue border-b-2 border-lex-med-blue' : 'text-gray-500 hover:text-gray-700'}`}>Bot Settings</button>
             </div>
 
             {/* Content */}
@@ -1271,6 +1301,36 @@ return (
                                 ))}
                             </div>
                         )}
+                    </div>
+                )}
+
+                {activeTab === 'settings' && (
+                    <div>
+                        <h2 className="text-lg font-bold mb-6">WhatsApp Bot Settings</h2>
+                        <div className="bg-gray-50 p-6 rounded-xl max-w-lg">
+                            <form onSubmit={handleSettingsSubmit} className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Dr. Andre Subscription Price (NGN)</label>
+                                    <div className="flex relative">
+                                        <span className="inline-flex items-center px-3 border border-r-0 border-gray-300 bg-gray-100 text-gray-500 rounded-l-md font-bold">
+                                            ₦
+                                        </span>
+                                        <input 
+                                            type="number" 
+                                            value={settingsForm.subscription_price}
+                                            onChange={(e) => setSettingsForm({ subscription_price: e.target.value })}
+                                            className="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md border border-gray-300 focus:ring-lex-med-blue focus:border-lex-med-blue"
+                                            placeholder="5000"
+                                            required
+                                        />
+                                    </div>
+                                    <p className="mt-2 text-xs text-gray-500">This price will be fetched dynamically via the Squadco checkout generator when users exhaust their 5 free questions.</p>
+                                </div>
+                                <button type="submit" className="w-full bg-lex-med-blue text-white py-2 rounded-lg font-bold hover:bg-lex-bright-blue transition-colors">
+                                    Update Bot Settings
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 )}
             </div>
