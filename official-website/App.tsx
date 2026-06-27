@@ -26,6 +26,7 @@ import SignUpPage from './pages/SignUpPage';
 import AccountPage from './pages/AccountPage';
 import HigsPage from './pages/HigsPage';
 import SsoCallbackPage from './pages/SsoCallbackPage';
+import PaymentCallbackPage from './pages/PaymentCallbackPage';
 import { initializeData } from './lib/dataService';
 
 const App: React.FC = () => {
@@ -146,6 +147,8 @@ const App: React.FC = () => {
         return <AdminPage />;
       case '/sso-callback':
         return <SsoCallbackPage />;
+      case '/payment-callback':
+        return <PaymentCallbackPage />;
       case '/higs':
         return <HigsPage />;
       default:
