@@ -224,6 +224,8 @@ WEBSITE_COLLECTIONS = [
             {'key': 'question_count', 'type': 'integer', 'required': False, 'default': 0},
             {'key': 'is_subscribed', 'type': 'boolean', 'required': False, 'default': False},
             {'key': 'is_registered', 'type': 'boolean', 'required': False, 'default': False},
+            {'key': 'subscription_end_date', 'type': 'datetime', 'required': False},
+            {'key': 'last_payment_ref', 'type': 'string', 'size': 256, 'required': False},
         ],
         'indexes': [
             {'key': 'wa_id_index', 'type': 'unique', 'attributes': ['wa_id']}

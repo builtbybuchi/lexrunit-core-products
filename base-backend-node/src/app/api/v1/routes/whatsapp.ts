@@ -143,9 +143,21 @@ whatsappRouter.post('/squad-webhook', async (c) => {
         
         if (response.documents.length > 0) {
           const doc = response.documents[0];
-          await db.updateDocument(DATABASE_ID, WA_USERS_COLLECTION, doc.$id, {
-            is_subscribed: true
-          });
+          
+          if (doc.last_payment_ref !== payload.Body.transaction_ref) {
+            const now = new Date();
+            let currentEnd = doc.subscription_end_date ? new Date(doc.subscription_end_date) : now;
+            if (currentEnd < now) currentEnd = now;
+            
+            // Add 30 days
+            currentEnd.setDate(currentEnd.getDate() + 30);
+
+            await db.updateDocument(DATABASE_ID, WA_USERS_COLLECTION, doc.$id, {
+              is_subscribed: true,
+              subscription_end_date: currentEnd.toISOString(),
+              last_payment_ref: payload.Body.transaction_ref
+            });
+          }
         }
       }
     }
@@ -186,12 +198,31 @@ whatsappRouter.post('/verify-payment', async (c) => {
           
           if (response.documents.length > 0) {
             const doc = response.documents[0];
-            // Only update if not already subscribed to save unnecessary DB writes
-            if (!doc.is_subscribed) {
-              await db.updateDocument(DATABASE_ID, WA_USERS_COLLECTION, doc.$id, {
-                is_subscribed: true
-              });
+            
+            // Prevent multiple accumulations from the same payment
+            if (doc.last_payment_ref === reference) {
+               return c.json({ success: true, detail: 'Already processed' }, 200);
             }
+            
+            // Validate timestamp to prevent using old references (older than 2 days)
+            const timestamp = parseInt(parts[2], 10);
+            if (Date.now() - timestamp > 2 * 24 * 60 * 60 * 1000) {
+                return c.json({ success: false, error: 'Payment reference expired' }, 400);
+            }
+            
+            const now = new Date();
+            let currentEnd = doc.subscription_end_date ? new Date(doc.subscription_end_date) : now;
+            if (currentEnd < now) currentEnd = now;
+            
+            // Add 30 days
+            currentEnd.setDate(currentEnd.getDate() + 30);
+
+            await db.updateDocument(DATABASE_ID, WA_USERS_COLLECTION, doc.$id, {
+              is_subscribed: true,
+              subscription_end_date: currentEnd.toISOString(),
+              last_payment_ref: reference
+            });
+            
             return c.json({ success: true }, 200);
           }
         }
