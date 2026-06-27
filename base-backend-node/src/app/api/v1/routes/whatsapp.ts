@@ -156,6 +156,55 @@ whatsappRouter.post('/squad-webhook', async (c) => {
   }
 });
 
+// Synchronous payment verification for the frontend callback page
+whatsappRouter.post('/verify-payment', async (c) => {
+  try {
+    const { reference } = await c.req.json();
+    if (!reference || !reference.startsWith('sub_')) {
+      return c.json({ success: false, error: 'Invalid reference format' }, 400);
+    }
+    
+    // Verify with Squadco API
+    if (c.env.SQUADCO_BASE_URL && c.env.SQUADCO_SECRET_KEY) {
+      const squadRes = await fetch(`${c.env.SQUADCO_BASE_URL}/transaction/verify/${reference}`, {
+        headers: {
+          'Authorization': `Bearer ${c.env.SQUADCO_SECRET_KEY}`
+        }
+      });
+      const squadData: any = await squadRes.json();
+      
+      // Check if successful
+      if (squadData?.data?.transaction_status === 'success') {
+        const parts = reference.split('_');
+        if (parts.length >= 2) {
+          const wa_id = parts[1];
+          const db = getDatabases(c.env);
+          
+          const response = await db.listDocuments(DATABASE_ID, WA_USERS_COLLECTION, [
+            Query.equal("wa_id", wa_id)
+          ]);
+          
+          if (response.documents.length > 0) {
+            const doc = response.documents[0];
+            // Only update if not already subscribed to save unnecessary DB writes
+            if (!doc.is_subscribed) {
+              await db.updateDocument(DATABASE_ID, WA_USERS_COLLECTION, doc.$id, {
+                is_subscribed: true
+              });
+            }
+            return c.json({ success: true }, 200);
+          }
+        }
+      }
+    }
+    
+    return c.json({ success: false, error: 'Payment not successful or verification failed' }, 400);
+  } catch (error: any) {
+    console.error("Verification error:", error);
+    return c.json({ success: false, error: error.message }, 500);
+  }
+});
+
 // Endpoint to mark user as registered from WhatsApp Flow
 whatsappRouter.post('/register', async (c) => {
   try {

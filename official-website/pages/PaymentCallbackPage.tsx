@@ -11,10 +11,23 @@ const PaymentCallbackPage: React.FC = () => {
     const reference = searchParams.get('reference');
 
     if (reference) {
-      // Simulate verifying payment
-      setTimeout(() => {
-        setStatus('success');
-      }, 2000);
+      const BASE_URL = import.meta.env.VITE_BASE_BACKEND_URL || 'http://localhost:8001/api/v1';
+      fetch(`${BASE_URL}/whatsapp/verify-payment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ reference })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setStatus('success');
+        } else {
+          setStatus('error');
+        }
+      })
+      .catch(() => setStatus('error'));
     } else {
       setStatus('error');
     }
