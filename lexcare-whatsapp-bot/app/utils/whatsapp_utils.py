@@ -180,7 +180,7 @@ def process_whatsapp_message(body):
                     f"👤 *Your Account Info*\n"
                     f"Name: {name}\n"
                     f"Questions Asked: {user_status.get('questionCount', 0)}\n"
-                    f"Subscribed: {'✅ Yes' if user_status.get('isSubscribed') else '❌ No'}\n\n"
+                    f"Subscribed: {'Yes' if user_status.get('isSubscribed') else 'No'}\n\n"
                     f"To manage your settings or update your preferences, visit: https://lexrunit.com/account"
                 )
                 data = get_text_message_input(wa_id, info)
