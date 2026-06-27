@@ -7,6 +7,8 @@ from .decorators.security import signature_required
 from .utils.whatsapp_utils import (
     process_whatsapp_message,
     is_valid_whatsapp_message,
+    send_message,
+    get_text_message_input
 )
 
 webhook_blueprint = Blueprint("webhook", __name__)
@@ -89,3 +91,24 @@ def webhook_get():
 @signature_required
 def webhook_post():
     return handle_message()
+
+@webhook_blueprint.route("/api/v1/whatsapp/send-otp", methods=["POST"])
+def send_otp():
+    # Only internal services should call this, ideally secured by a token
+    # For now we'll process the JSON request
+    body = request.get_json()
+    wa_id = body.get("wa_id")
+    code = body.get("code")
+    
+    if not wa_id or not code:
+        return jsonify({"success": False, "error": "Missing wa_id or code"}), 400
+        
+    # Standardize phone number format (ensure no plus)
+    if wa_id.startswith('+'):
+        wa_id = wa_id[1:]
+        
+    message = f"Your Lexrunit verification code is: *{code}*. Please enter this on the website to verify your phone number."
+    data = get_text_message_input(wa_id, message)
+    send_message(data)
+    
+    return jsonify({"success": True}), 200

@@ -12,6 +12,9 @@ const AccountPage: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [initialPhoneSet, setInitialPhoneSet] = useState(false);
+  const [verificationCode, setVerificationCode] = useState('');
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [awaitingCode, setAwaitingCode] = useState(false);
 
   const syncUser = async (isManualSave = false) => {
     if (isLoaded && isSignedIn && user) {
@@ -52,8 +55,6 @@ const AccountPage: React.FC = () => {
           if (isManualSave) {
               setIsSaving(false);
               setIsEditingPhone(false);
-              setToastMessage('Phone number saved successfully!');
-              setTimeout(() => setToastMessage(''), 3000);
           }
           return fetch(`${BASE_URL}/users/settings`, { headers: { 'Authorization': `Bearer ${token}` } });
       }).then(res => res.json())
@@ -62,6 +63,71 @@ const AccountPage: React.FC = () => {
           console.error(e);
           if (isManualSave) setIsSaving(false);
       });
+    }
+  };
+
+  const handleRequestVerification = async () => {
+    if (!phone) return;
+    setIsSaving(true);
+    const BASE_URL = import.meta.env.VITE_BASE_BACKEND_URL || 'http://localhost:8001/api/v1';
+    const token = await getToken();
+    try {
+      const res = await fetch(`${BASE_URL}/users/request-verification`, {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ phone })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAwaitingCode(true);
+        setToastMessage('Verification code sent to your WhatsApp!');
+        setTimeout(() => setToastMessage(''), 5000);
+      } else {
+        setToastMessage(data.detail || 'Failed to send verification code');
+        setTimeout(() => setToastMessage(''), 3000);
+      }
+    } catch (e) {
+      setToastMessage('Network error');
+      setTimeout(() => setToastMessage(''), 3000);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleVerifyCode = async () => {
+    if (!verificationCode) return;
+    setIsVerifying(true);
+    const BASE_URL = import.meta.env.VITE_BASE_BACKEND_URL || 'http://localhost:8001/api/v1';
+    const token = await getToken();
+    try {
+      const res = await fetch(`${BASE_URL}/users/verify-phone`, {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ code: verificationCode })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setToastMessage('Phone number verified successfully!');
+        setTimeout(() => setToastMessage(''), 3000);
+        setAwaitingCode(false);
+        setVerificationCode('');
+        // Sync user to get the new phone state and products
+        syncUser(true);
+      } else {
+        setToastMessage(data.detail || 'Invalid verification code');
+        setTimeout(() => setToastMessage(''), 3000);
+      }
+    } catch (e) {
+      setToastMessage('Network error');
+      setTimeout(() => setToastMessage(''), 3000);
+    } finally {
+      setIsVerifying(false);
     }
   };
 
@@ -102,24 +168,64 @@ const AccountPage: React.FC = () => {
             <div className="flex flex-col gap-4 max-w-sm">
                 {isEditingPhone ? (
                     <>
-                        <PhoneInput
-                            placeholder="Enter phone number"
-                            value={phone}
-                            onChange={(val: any) => setPhone(val)}
-                            className="border p-2 rounded focus:ring-2 focus:ring-lex-med-blue outline-none"
-                        />
-                        <button 
-                            onClick={() => syncUser(true)} 
-                            disabled={isSaving}
-                            className="bg-lex-med-blue text-white py-2 px-4 rounded hover:bg-lex-bright-blue font-bold mt-2 flex justify-center items-center h-10"
-                        >
-                            {isSaving ? (
-                                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                            ) : 'Save Number'}
-                        </button>
+                        {!awaitingCode ? (
+                            <>
+                                <PhoneInput
+                                    placeholder="Enter WhatsApp number"
+                                    value={phone}
+                                    onChange={(val: any) => setPhone(val)}
+                                    className="border p-2 rounded focus:ring-2 focus:ring-lex-med-blue outline-none"
+                                />
+                                <button 
+                                    onClick={handleRequestVerification} 
+                                    disabled={isSaving}
+                                    className="bg-lex-med-blue text-white py-2 px-4 rounded hover:bg-lex-bright-blue font-bold mt-2 flex justify-center items-center h-10"
+                                >
+                                    {isSaving ? (
+                                        <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                    ) : 'Send Verification Code'}
+                                </button>
+                                <button 
+                                    onClick={() => setIsEditingPhone(false)} 
+                                    className="text-gray-500 hover:text-gray-800 text-sm mt-2 font-semibold"
+                                >
+                                    Cancel
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <p className="text-sm text-gray-700">Enter the 6-digit code sent to your WhatsApp.</p>
+                                <input
+                                    type="text"
+                                    placeholder="000000"
+                                    maxLength={6}
+                                    value={verificationCode}
+                                    onChange={(e) => setVerificationCode(e.target.value)}
+                                    className="border p-2 rounded focus:ring-2 focus:ring-lex-med-blue outline-none tracking-widest text-center text-lg"
+                                />
+                                <button 
+                                    onClick={handleVerifyCode} 
+                                    disabled={isVerifying || verificationCode.length < 6}
+                                    className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 font-bold mt-2 flex justify-center items-center h-10 disabled:opacity-50"
+                                >
+                                    {isVerifying ? (
+                                        <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                    ) : 'Verify Code'}
+                                </button>
+                                <button 
+                                    onClick={() => setAwaitingCode(false)} 
+                                    className="text-gray-500 hover:text-gray-800 text-sm mt-2 font-semibold"
+                                >
+                                    Change Number
+                                </button>
+                            </>
+                        )}
                     </>
                 ) : (
                     <div className="flex items-center justify-between border p-3 rounded bg-gray-50">
