@@ -163,7 +163,7 @@ whatsappRouter.post('/register', async (c) => {
     const db = getDatabases(c.env);
     
     const response = await db.listDocuments(DATABASE_ID, WA_USERS_COLLECTION, [
-      `equal("wa_id", ["${wa_id}"])`
+      Query.equal("wa_id", wa_id)
     ]);
     
     if (response.documents.length > 0) {
