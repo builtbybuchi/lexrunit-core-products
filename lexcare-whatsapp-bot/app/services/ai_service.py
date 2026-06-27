@@ -6,8 +6,8 @@ import uuid
 
 LEXRUNIT_API_KEY = os.environ.get("LEXRUNIT_API_KEY")
 BASE_BACKEND_URL = os.environ.get("VITE_BASE_BACKEND_URL", "https://lexrunit-base-backend.builtbybuchi.workers.dev")
-URL = "https://lexcare-ai2.fly.dev/lexcare/v1/chat/patient"
-CONSULT_URL = "https://lexcare-ai2.fly.dev/lexcare/v1/chat/consultation"
+URL = "https://lexrunit-core-products.fly.dev/lexcare/v1/chat/patient"
+CONSULT_URL = "https://lexrunit-core-products.fly.dev/lexcare/v1/chat/consultation"
 
 headers = {
     "Content-Type": "application/json",
