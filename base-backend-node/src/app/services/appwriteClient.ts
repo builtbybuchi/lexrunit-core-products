@@ -12,7 +12,7 @@ export class Client {
 export class Databases {
   constructor(private client: Client) {}
 
-  async listDocuments(databaseId: string, collectionId: string, queries: any[] = []) {
+  async listDocuments(databaseId: string, collectionId: string, queries: any[] = []): Promise<any> {
     const url = new URL(`${this.client.endpoint}/databases/${databaseId}/collections/${collectionId}/documents`);
     // Appwrite stringifies queries as JSON strings in headers or URL params? No, in v14 it encodes them.
     // We will just stringify the query array manually as Appwrite expects them natively:
@@ -36,7 +36,7 @@ export class Databases {
     return res.json();
   }
 
-  async createDocument(databaseId: string, collectionId: string, documentId: string, data: any) {
+  async createDocument(databaseId: string, collectionId: string, documentId: string, data: any): Promise<any> {
     const res = await fetch(`${this.client.endpoint}/databases/${databaseId}/collections/${collectionId}/documents`, {
       method: 'POST',
       headers: {
@@ -50,7 +50,7 @@ export class Databases {
     return res.json();
   }
 
-  async updateDocument(databaseId: string, collectionId: string, documentId: string, data: any) {
+  async updateDocument(databaseId: string, collectionId: string, documentId: string, data: any): Promise<any> {
     const res = await fetch(`${this.client.endpoint}/databases/${databaseId}/collections/${collectionId}/documents/${documentId}`, {
       method: 'PATCH',
       headers: {
