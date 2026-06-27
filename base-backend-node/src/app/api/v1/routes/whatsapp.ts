@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { Bindings } from '../../../core/types';
 import { getDatabases, DATABASE_ID } from '../../../services/appwriteClient';
+import { Query } from 'node-appwrite';
 
 export const whatsappRouter = new Hono<{ Bindings: Bindings }>();
 
@@ -18,7 +19,7 @@ whatsappRouter.post('/user-status', async (c) => {
     let userDoc: any;
     try {
       const response = await db.listDocuments(DATABASE_ID, WA_USERS_COLLECTION, [
-        `equal("wa_id", ["${wa_id}"])`
+        Query.equal("wa_id", wa_id)
       ]);
       if (response.documents.length > 0) {
         userDoc = response.documents[0];
@@ -53,7 +54,7 @@ whatsappRouter.post('/user-status', async (c) => {
         let price = 5000; // default 5000 NGN
         try {
            const settingsRes = await db.listDocuments(DATABASE_ID, SETTINGS_COLLECTION, [
-             `equal("key", ["subscription_price"])`
+             Query.equal("key", "subscription_price")
            ]);
            if (settingsRes.documents.length > 0) {
               price = parseInt(settingsRes.documents[0].value, 10);
@@ -107,7 +108,7 @@ whatsappRouter.post('/increment-question', async (c) => {
     const db = getDatabases(c.env);
     
     const response = await db.listDocuments(DATABASE_ID, WA_USERS_COLLECTION, [
-      `equal("wa_id", ["${wa_id}"])`
+      Query.equal("wa_id", wa_id)
     ]);
     
     if (response.documents.length > 0) {
@@ -137,7 +138,7 @@ whatsappRouter.post('/squad-webhook', async (c) => {
         
         const db = getDatabases(c.env);
         const response = await db.listDocuments(DATABASE_ID, WA_USERS_COLLECTION, [
-          `equal("wa_id", ["${wa_id}"])`
+          Query.equal("wa_id", wa_id)
         ]);
         
         if (response.documents.length > 0) {
