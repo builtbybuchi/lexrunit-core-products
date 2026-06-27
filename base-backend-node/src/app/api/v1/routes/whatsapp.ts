@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { Bindings } from '../../../core/types';
-import { getDatabases, DATABASE_ID } from '../../services/appwriteClient';
+import { getDatabases, DATABASE_ID } from '../../../services/appwriteClient';
 
 export const whatsappRouter = new Hono<{ Bindings: Bindings }>();
 

@@ -77,7 +77,7 @@ Please use the information above to help answer the user's question. The informa
         
         # Call Groq API
         print(messages)
-        ai_response = call_groq("llama-3.1-8b-instant", messages)
+        ai_response = call_groq("openai/gpt-oss-120b", messages)
         
         # Update session history
         ContextManager.update_session_history(session_id, user_message, ai_response)

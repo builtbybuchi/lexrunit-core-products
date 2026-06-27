@@ -78,7 +78,7 @@ def get_interactive_menu_input(recipient):
     )
 
 
-def get_flow_button_input(recipient, flow_id, flow_token, header_text, body_text, button_text):
+def get_flow_button_input(recipient, flow_id, flow_token, header_text, body_text, button_text, screen="REGISTER_SCREEN"):
     return json.dumps({
         "messaging_product": "whatsapp",
         "recipient_type": "individual",
@@ -105,7 +105,7 @@ def get_flow_button_input(recipient, flow_id, flow_token, header_text, body_text
                     "flow_cta": button_text,
                     "flow_action": "navigate",
                     "flow_action_payload": {
-                        "screen": "REGISTER_SCREEN",
+                        "screen": screen,
                     }
                 }
             }
@@ -173,28 +173,87 @@ def process_whatsapp_message(body):
         if interactive_type == "list_reply":
             reply_id = message["interactive"]["list_reply"]["id"]
             if reply_id == "menu_my_account":
-                response = "You selected *My Account*.\n\nTo manage your account, please visit: https://lexrunit.com/account"
+                from app.services.ai_service import check_user_status
+                user_status = check_user_status(wa_id, name)
+                
+                info = (
+                    f"👤 *Your Account Info*\n"
+                    f"Name: {name}\n"
+                    f"Questions Asked: {user_status.get('questionCount', 0)}\n"
+                    f"Subscribed: {'✅ Yes' if user_status.get('isSubscribed') else '❌ No'}\n\n"
+                    f"To manage your settings or update your preferences, visit: https://lexrunit.com/account"
+                )
+                data = get_text_message_input(wa_id, info)
+                send_message(data)
+                return
             elif reply_id == "menu_book_consult":
-                response = "You selected *Book Consultation*.\n\n(WhatsApp Flow for Booking Consultation will be triggered here)"
+                data = get_flow_button_input(
+                    recipient=wa_id,
+                    flow_id="1546323520196726",
+                    flow_token="book_consult_flow",
+                    header_text="Book Consultation",
+                    body_text="Please provide the details for your appointment.",
+                    button_text="Open Form",
+                    screen="book_consultation"
+                )
+                send_message(data)
+                return
             elif reply_id == "menu_order_drug":
-                response = "You selected *Order Drug*.\n\n(WhatsApp Flow for Ordering Drugs will be triggered here)"
+                data = get_flow_button_input(
+                    recipient=wa_id,
+                    flow_id="2106749493243947",
+                    flow_token="order_drug_flow",
+                    header_text="Pharmacy Order",
+                    body_text="Please fill out this form to request your prescription or refill.",
+                    button_text="Open Form",
+                    screen="order_drug"
+                )
+                send_message(data)
+                return
             elif reply_id == "menu_order_lab":
-                response = "You selected *Order Lab Test*.\n\n(WhatsApp Flow for Ordering Lab Tests will be triggered here)"
+                data = get_flow_button_input(
+                    recipient=wa_id,
+                    flow_id="1023272653393135",
+                    flow_token="order_lab_flow",
+                    header_text="Order Lab Test",
+                    body_text="Please select the test you need and your preferred location.",
+                    button_text="Open Form",
+                    screen="order_lab"
+                )
+                send_message(data)
+                return
             else:
                 response = "Invalid selection."
-            
-            data = get_text_message_input(wa_id, response)
-            send_message(data)
-            return
+                data = get_text_message_input(wa_id, response)
+                send_message(data)
+                return
             
         elif interactive_type == "nfm_reply":
             response_json_str = message["interactive"]["nfm_reply"]["response_json"]
             response_data = json.loads(response_json_str)
             
-            # Extract name and email from the flow response (keys depend on your flow JSON)
-            full_name = response_data.get("full_name", name)
+            action = response_data.get("action")
             
-            # Send to backend to register
+            if action == "book_consultation":
+                response = f"Your consultation has been booked for {response_data.get('date')} at {response_data.get('time')}. Reason: {response_data.get('symptoms')}. Our team will contact you shortly."
+                data = get_text_message_input(wa_id, response)
+                send_message(data)
+                return
+            elif action == "order_drug":
+                response = f"Your order for {response_data.get('medication')} to be delivered to {response_data.get('address')} has been received."
+                data = get_text_message_input(wa_id, response)
+                send_message(data)
+                return
+            elif action == "order_lab_test":
+                response = f"Your request for a {response_data.get('test')} ({response_data.get('location')}) has been received."
+                data = get_text_message_input(wa_id, response)
+                send_message(data)
+                return
+            else:
+                # Registration flow
+                full_name = response_data.get("full_name", name)
+                
+                # Send to backend to register
             try:
                 backend_url = f"{current_app.config['BASE_BACKEND_URL']}/api/v1/whatsapp/register"
                 requests.post(backend_url, json={"wa_id": wa_id, "name": full_name}, timeout=10)
@@ -212,17 +271,17 @@ def process_whatsapp_message(body):
         message_body = message["text"]["body"]
         
         # Trigger Menu
-        if message_body.strip().lower() == "menu":
+        trigger_text = message_body.strip().lower()
+        if trigger_text in ["menu", "/menu", "drandre", "/drandre"]:
             data = get_interactive_menu_input(wa_id)
             send_message(data)
             return
             
         # Trigger Register
         if message_body.strip().lower() == "register":
-            # Note: Replace `<YOUR_REGISTER_FLOW_ID>` with the actual ID from Meta dashboard
             data = get_flow_button_input(
                 recipient=wa_id,
-                flow_id="<YOUR_REGISTER_FLOW_ID>",
+                flow_id="1345904660411257",
                 flow_token="register_flow",
                 header_text="Account Setup",
                 body_text="Please complete your registration to access LexCare features.",

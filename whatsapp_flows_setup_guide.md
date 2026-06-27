@@ -29,8 +29,7 @@ This flow allows patients to select a date, time, and reason for their consultat
 
 ```json
 {
-  "version": "3.0",
-  "data_api_version": "3.0",
+  "version": "7.3",
   "routing_model": {
     "book_consultation": []
   },
@@ -38,6 +37,24 @@ This flow allows patients to select a date, time, and reason for their consultat
     {
       "id": "book_consultation",
       "title": "Book a Consultation",
+      "terminal": true,
+      "success": true,
+      "data": {
+        "time_options": {
+          "type": "array",
+          "items": { "type": "object", "properties": { "id": { "type": "string" }, "title": { "type": "string" } } },
+          "__example__": [
+            { "id": "morning", "title": "Morning (8AM - 12PM)" },
+            { "id": "afternoon", "title": "Afternoon (12PM - 4PM)" },
+            { "id": "evening", "title": "Evening (4PM - 8PM)" }
+          ],
+          "__value__": [
+            { "id": "morning", "title": "Morning (8AM - 12PM)" },
+            { "id": "afternoon", "title": "Afternoon (12PM - 4PM)" },
+            { "id": "evening", "title": "Evening (4PM - 8PM)" }
+          ]
+        }
+      },
       "layout": {
         "type": "SingleColumnLayout",
         "children": [
@@ -60,11 +77,7 @@ This flow allows patients to select a date, time, and reason for their consultat
             "name": "consult_time",
             "label": "Preferred Time",
             "required": true,
-            "data-source": [
-              { "id": "morning", "title": "Morning (8AM - 12PM)" },
-              { "id": "afternoon", "title": "Afternoon (12PM - 4PM)" },
-              { "id": "evening", "title": "Evening (4PM - 8PM)" }
-            ]
+            "data-source": "${data.time_options}"
           },
           {
             "type": "TextInput",
@@ -98,8 +111,7 @@ This flow allows patients to request a prescription refill or order new drugs to
 
 ```json
 {
-  "version": "3.0",
-  "data_api_version": "3.0",
+  "version": "7.3",
   "routing_model": {
     "order_drug": []
   },
@@ -107,6 +119,22 @@ This flow allows patients to request a prescription refill or order new drugs to
     {
       "id": "order_drug",
       "title": "Order Medication",
+      "terminal": true,
+      "success": true,
+      "data": {
+        "status_options": {
+          "type": "array",
+          "items": { "type": "object", "properties": { "id": { "type": "string" }, "title": { "type": "string" } } },
+          "__example__": [
+            { "id": "has_prescription", "title": "I have a prescription for this" },
+            { "id": "refill", "title": "This is a refill of a previous order" }
+          ],
+          "__value__": [
+            { "id": "has_prescription", "title": "I have a prescription for this" },
+            { "id": "refill", "title": "This is a refill of a previous order" }
+          ]
+        }
+      },
       "layout": {
         "type": "SingleColumnLayout",
         "children": [
@@ -131,10 +159,8 @@ This flow allows patients to request a prescription refill or order new drugs to
           {
             "type": "CheckboxGroup",
             "name": "prescription_status",
-            "data-source": [
-              { "id": "has_prescription", "title": "I have a prescription for this" },
-              { "id": "refill", "title": "This is a refill of a previous order" }
-            ]
+            "label": "Prescription Status",
+            "data-source": "${data.status_options}"
           },
           {
             "type": "Footer",
@@ -161,8 +187,7 @@ This flow allows patients to request lab tests to be done at home or at the clin
 
 ```json
 {
-  "version": "3.0",
-  "data_api_version": "3.0",
+  "version": "7.3",
   "routing_model": {
     "order_lab": []
   },
@@ -170,6 +195,38 @@ This flow allows patients to request lab tests to be done at home or at the clin
     {
       "id": "order_lab",
       "title": "Order Lab Test",
+      "terminal": true,
+      "success": true,
+      "data": {
+        "test_options": {
+          "type": "array",
+          "items": { "type": "object", "properties": { "id": { "type": "string" }, "title": { "type": "string" } } },
+          "__example__": [
+            { "id": "blood_test", "title": "Blood Test (CBC, Malaria, etc.)" },
+            { "id": "urinalysis", "title": "Urinalysis" },
+            { "id": "std_panel", "title": "STD/STI Panel" },
+            { "id": "other", "title": "Other / Doctor Recommended" }
+          ],
+          "__value__": [
+            { "id": "blood_test", "title": "Blood Test (CBC, Malaria, etc.)" },
+            { "id": "urinalysis", "title": "Urinalysis" },
+            { "id": "std_panel", "title": "STD/STI Panel" },
+            { "id": "other", "title": "Other / Doctor Recommended" }
+          ]
+        },
+        "location_options": {
+          "type": "array",
+          "items": { "type": "object", "properties": { "id": { "type": "string" }, "title": { "type": "string" } } },
+          "__example__": [
+            { "id": "home_sample", "title": "Home Sample Collection" },
+            { "id": "visit_clinic", "title": "Visit LexCare Clinic" }
+          ],
+          "__value__": [
+            { "id": "home_sample", "title": "Home Sample Collection" },
+            { "id": "visit_clinic", "title": "Visit LexCare Clinic" }
+          ]
+        }
+      },
       "layout": {
         "type": "SingleColumnLayout",
         "children": [
@@ -182,22 +239,14 @@ This flow allows patients to request lab tests to be done at home or at the clin
             "name": "test_type",
             "label": "Select Test Category",
             "required": true,
-            "data-source": [
-              { "id": "blood_test", "title": "Blood Test (CBC, Malaria, etc.)" },
-              { "id": "urinalysis", "title": "Urinalysis" },
-              { "id": "std_panel", "title": "STD/STI Panel" },
-              { "id": "other", "title": "Other / Doctor Recommended" }
-            ]
+            "data-source": "${data.test_options}"
           },
           {
             "type": "Dropdown",
             "name": "location_preference",
             "label": "Where do you want to take the test?",
             "required": true,
-            "data-source": [
-              { "id": "home_sample", "title": "Home Sample Collection" },
-              { "id": "visit_clinic", "title": "Visit LexCare Clinic" }
-            ]
+            "data-source": "${data.location_options}"
           },
           {
             "type": "Footer",
