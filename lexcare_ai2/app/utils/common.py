@@ -76,20 +76,9 @@ Please use the information above to help answer the user's question. The informa
         # Add current user message
         messages.append({"role": "user", "content": user_message})
         
-        # Call Groq API concurrently for A/B testing
-        import concurrent.futures
-        try:
-            with concurrent.futures.ThreadPoolExecutor() as executor:
-                future_gpt = executor.submit(call_groq, "openai/gpt-oss-120b", messages)
-                future_llama = executor.submit(call_groq, "llama-3.3-70b-versatile", messages)
-                
-                gpt_res = future_gpt.result()
-                llama_res = future_llama.result()
-                
-            ai_response = f"--- [Model A: gpt-oss-120b] ---\n{gpt_res}\n\n--- [Model B: llama-3.3-70b-versatile] ---\n{llama_res}"
-        except Exception as e:
-            print(f"AB test concurrent execution error: {e}")
-            ai_response = call_groq("openai/gpt-oss-120b", messages)
+        # Call Groq API
+        print(messages)
+        ai_response = call_groq("llama-3.3-70b-versatile", messages)
         
         # Update session history
         ContextManager.update_session_history(session_id, user_message, ai_response)
