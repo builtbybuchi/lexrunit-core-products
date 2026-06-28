@@ -10,4 +10,4 @@ fpdf
 pypdf
 groq
 appwrite
-google-genai
+upstash-vector

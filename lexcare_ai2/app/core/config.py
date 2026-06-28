@@ -26,24 +26,3 @@ def get_appwrite_config():
         )
 
     return endpoint, project_id, api_key
-
-
-def get_google_genai_config():
-    """
-    Get Google GenAI configuration from the environment variables.
-
-    Returns:
-        str: API key for Google GenAI client
-
-    Raises:
-        ValueError: If required environment variables are missing
-    """
-    api_key = os.environ.get("GOOGLE_API_KEY")
-
-    if not api_key:
-        raise ValueError(
-            "GOOGLE_API_KEY environment variable must be set. "
-            "Please add it to your .env file"
-        )
-
-    return api_key

@@ -50,9 +50,10 @@ def call_groq_with_context(session_id: str, user_message: str, session_type: str
         str: AI response
     """
     try:
-        # Get RAG context for medical queries using Google File Search
-        from app.services.rag_system import get_medical_context
-        medical_context = get_medical_context(query=user_message)
+        from app.services.rag_system import get_upstash_context
+        
+        # Fetch relevant knowledgebase data
+        medical_context = get_upstash_context(query=user_message)
         
         # Build complete prompt with context
         messages = ContextManager.build_prompt_with_context(session_id, session_type)
@@ -75,9 +76,20 @@ Please use the information above to help answer the user's question. The informa
         # Add current user message
         messages.append({"role": "user", "content": user_message})
         
-        # Call Groq API
-        print(messages)
-        ai_response = call_groq("openai/gpt-oss-120b", messages)
+        # Call Groq API concurrently for A/B testing
+        import concurrent.futures
+        try:
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future_gpt = executor.submit(call_groq, "openai/gpt-oss-120b", messages)
+                future_llama = executor.submit(call_groq, "llama-3.3-70b-versatile", messages)
+                
+                gpt_res = future_gpt.result()
+                llama_res = future_llama.result()
+                
+            ai_response = f"--- [Model A: gpt-oss-120b] ---\n{gpt_res}\n\n--- [Model B: llama-3.3-70b-versatile] ---\n{llama_res}"
+        except Exception as e:
+            print(f"AB test concurrent execution error: {e}")
+            ai_response = call_groq("openai/gpt-oss-120b", messages)
         
         # Update session history
         ContextManager.update_session_history(session_id, user_message, ai_response)
