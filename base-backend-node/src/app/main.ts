@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-import { rateLimiter, requireAuth } from './core/dependencies';
+import { rateLimiter, requireAuth, cacheMiddleware } from './core/dependencies';
 import { Bindings } from './core/types';
 import { clerkMiddleware } from '@clerk/hono';
 
@@ -49,6 +49,13 @@ const clerkAuthMiddleware = async (c: any, next: any) => {
 
 api.use('/admin/*', clerkAuthMiddleware, requireAuth);
 api.use('/users/*', clerkAuthMiddleware, requireAuth);
+
+// Apply Redis caching to public read-heavy routes to protect the database
+api.use('/hospitals/*', cacheMiddleware(300));
+api.use('/careers/*', cacheMiddleware(300));
+api.use('/news/*', cacheMiddleware(300));
+api.use('/blog/*', cacheMiddleware(300));
+api.use('/higs/*', cacheMiddleware(300));
 
 api.route('/hospitals', hospitalsRouter);
 api.route('/careers', careersRouter);

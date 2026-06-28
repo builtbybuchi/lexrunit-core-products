@@ -18,6 +18,8 @@
   "dependencies": {
     "@clerk/hono": "^0.1.41",
     "@upstash/qstash": "^2.11.1",
+    "@upstash/ratelimit": "^2.0.8",
+    "@upstash/redis": "^1.38.0",
     "@upstash/vector": "^1.2.3",
     "hono": "^4.12.27",
     "libphonenumber-js": "^1.13.7",

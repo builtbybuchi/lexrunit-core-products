@@ -10,6 +10,8 @@ export type Bindings = {
   QSTASH_NEXT_SIGNING_KEY: string
   UPSTASH_VECTOR_REST_URL: string
   UPSTASH_VECTOR_REST_TOKEN: string
+  UPSTASH_REDIS_REST_URL: string
+  UPSTASH_REDIS_REST_TOKEN: string
   APP_URL: string
   SQUADCO_BASE_URL: string
   SQUADCO_PUBLIC_KEY: string
