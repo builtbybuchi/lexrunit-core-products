@@ -1,119 +1,143 @@
 import { motion } from 'framer-motion';
-import { MessageCircle, ClipboardList, Sparkles, ArrowRight } from 'lucide-react';
-import { useScrollReveal } from '@/hooks/useScrollReveal';
+import { MessageCircle, ClipboardList, Sparkles, Building2 } from 'lucide-react';
+import { WhatsAppMockup } from '@/components/WhatsAppMockup';
 
 const steps = [
   {
     icon: MessageCircle,
     title: 'Start a Chat',
-    description: 'Send a message to Dr. Andre on WhatsApp. No downloads or installations needed.',
+    description: 'Send a message to Dr. Andre on WhatsApp. No downloads or complex sign-ups needed. Just say hi!',
     color: 'bg-whatsapp/10 text-whatsapp',
     number: '01',
   },
   {
     icon: ClipboardList,
     title: 'Describe Symptoms',
-    description: 'Tell Dr. Andre how you\'re feeling in plain, natural language.',
-    color: 'bg-primary/10 text-primary',
+    description: 'Tell Dr. Andre how you\'re feeling in plain, natural language. Our AI securely analyzes your medical concerns instantly.',
+    color: 'bg-primary-light/10 text-primary-light',
     number: '02',
   },
   {
     icon: Sparkles,
     title: 'Get Instant Guidance',
-    description: 'Receive quick, reliable health advice anytime, anywhere — day or night.',
-    color: 'bg-accent/10 text-accent',
+    description: 'Receive quick, reliable health advice, book consultations, or order lab tests anytime, anywhere — day or night.',
+    color: 'bg-secondary/50 text-primary',
     number: '03',
+  },
+  {
+    icon: Building2,
+    title: 'Connect to Your Hospital',
+    description: 'Seamlessly link your profile with your primary healthcare provider to share records and schedule in-person visits.',
+    color: 'bg-primary/10 text-primary-dark',
+    number: '04',
   },
 ];
 
 export default function HowItWorks() {
-  const { ref, isVisible } = useScrollReveal<HTMLDivElement>();
-
   return (
-    <section id="how-it-works" className="relative py-20 lg:py-28 bg-page">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" ref={ref}>
+    <section id="how-it-works" className="relative py-24 lg:py-32 bg-page overflow-hidden">
+      <div className="container mx-auto px-6 max-w-7xl">
+        
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={isVisible ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
-          className="text-center mb-16"
-        >
-          <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-sm font-semibold rounded-full mb-4">
+        <div className="text-center mb-16 lg:mb-24">
+          <motion.span 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-sm font-semibold rounded-full mb-4"
+          >
             Simple Process
-          </span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary-dark tracking-tight mb-4">
+          </motion.span>
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary-dark tracking-tight mb-4"
+          >
             How It Works
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="text-lg text-muted-foreground max-w-2xl mx-auto"
+          >
             Getting health advice has never been easier. Three simple steps to better health.
-          </p>
-        </motion.div>
-
-        {/* Steps */}
-        <div className="grid md:grid-cols-3 gap-8 lg:gap-12 mb-16">
-          {steps.map((step, index) => {
-            const Icon = step.icon;
-            return (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                animate={isVisible ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: index * 0.15 }}
-                className="relative group"
-              >
-                {/* Connector line (desktop only) */}
-                {index < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-12 left-[60%] w-[80%] h-[2px]">
-                    <div className="w-full h-full bg-gradient-to-r from-primary/20 to-transparent" />
-                    <ArrowRight className="absolute right-0 -top-[7px] w-4 h-4 text-primary/30" />
-                  </div>
-                )}
-
-                <div className="bg-white rounded-2xl lg:rounded-3xl p-6 lg:p-8 shadow-card border border-primary/5 transition-all duration-500 hover:shadow-card-hover hover:-translate-y-1">
-                  {/* Number + Icon */}
-                  <div className="flex items-center justify-between mb-6">
-                    <div className={`w-14 h-14 rounded-2xl ${step.color} flex items-center justify-center`}>
-                      <Icon className="w-6 h-6" />
-                    </div>
-                    <span className="text-4xl font-extrabold text-primary/10 group-hover:text-primary/20 transition-colors">
-                      {step.number}
-                    </span>
-                  </div>
-
-                  <h3 className="text-xl font-bold text-primary-dark mb-3">
-                    {step.title}
-                  </h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    {step.description}
-                  </p>
-                </div>
-              </motion.div>
-            );
-          })}
+          </motion.p>
         </div>
 
-        {/* WhatsApp Conversation Preview */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={isVisible ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, delay: 0.5 }}
-          className="flex justify-center"
-        >
-          <div className="relative">
-            {/* Glow */}
-            <div className="absolute -inset-4 bg-gradient-to-r from-primary/5 via-accent/5 to-whatsapp/5 rounded-[2.5rem] blur-2xl" />
+        <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-8">
+          
+          {/* Left Column: Phone Mockup */}
+          <div className="w-full lg:w-1/2 flex justify-center lg:justify-start perspective-1000">
+            <motion.div
+              initial={{ opacity: 0, x: -40, rotateY: -15 }}
+              whileInView={{ opacity: 1, x: 0, rotateY: 10 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1, ease: "easeOut" }}
+              className="relative w-full max-w-[340px] sm:max-w-[380px] transform-gpu hover:rotate-y-0 transition-transform duration-700 ease-out z-10"
+            >
+              {/* Glow */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-tr from-primary-light/20 to-whatsapp/20 rounded-full blur-[100px] -z-10" />
 
-            <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border-[8px] border-white bg-white">
-              <img
-                src="/images/whatsapp-conversation.jpg"
-                alt="WhatsApp conversation with Dr. Andre showing symptom checking"
-                className="w-full max-w-[340px] sm:max-w-[380px] h-auto object-contain"
-                loading="lazy"
-              />
+              <div className="bg-black/90 backdrop-blur-md rounded-[3rem] p-3 shadow-[0_20px_60px_-15px_rgba(2,20,136,0.3)] border-[2px] border-white/20">
+                <WhatsAppMockup rotate={false} className="w-full shadow-none rounded-[2.5rem] overflow-hidden" />
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Right Column: Stacked Cards */}
+          <div className="w-full lg:w-1/2 flex justify-center lg:justify-end">
+            <div className="flex flex-col pb-12 pt-4 px-2 w-full max-w-lg">
+              {steps.map((step, index) => {
+                const Icon = step.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.3 + index * 0.15 }}
+                    className={`group relative p-6 md:p-8 rounded-[2rem] shadow-[0_-10px_30px_rgba(2,20,136,0.05)] bg-white border border-primary/10 transition-all duration-500 hover:z-50 hover:-translate-y-4 hover:shadow-[0_20px_50px_rgba(2,20,136,0.12)] cursor-pointer ${
+                      index > 0 ? '-mt-6' : ''
+                    }`}
+                    style={{ zIndex: index * 10 }}
+                  >
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+                      <div className={`w-14 h-14 md:w-16 md:h-16 shrink-0 rounded-2xl ${step.color} flex items-center justify-center shadow-inner transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6`}>
+                        <Icon className="w-7 h-7 md:w-8 md:h-8" />
+                      </div>
+                      
+                      <div className="flex-1 w-full">
+                        <div className="flex items-center justify-between w-full">
+                          <h3 className="text-xl md:text-2xl font-bold text-primary-dark">
+                            {step.title}
+                          </h3>
+                          <span className="text-3xl md:text-4xl font-extrabold text-page group-hover:text-primary/10 transition-colors duration-500">
+                            {step.number}
+                          </span>
+                        </div>
+                        
+                        {/* Accordion Content */}
+                        <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-out">
+                          <div className="overflow-hidden">
+                            <p className="text-muted-foreground text-base md:text-lg leading-relaxed pt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                              {step.description}
+                            </p>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
-        </motion.div>
+
+        </div>
       </div>
     </section>
   );

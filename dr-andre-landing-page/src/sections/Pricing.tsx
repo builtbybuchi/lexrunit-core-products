@@ -13,8 +13,8 @@ const pricingFeatures = [
   },
   {
     icon: CalendarDays,
-    title: '7 Days FREE Trial',
-    description: 'Explore Dr. Andre for free before you subscribe. Experience the full service risk-free.',
+    title: '5 Free Daily Questions',
+    description: 'Enjoy up to 5 free health inquiries every single day without paying. Upgrade only when you need more!',
     gradient: 'from-[#E8F8E8] to-[#D0F0D0]',
     highlight: true,
   },
@@ -28,10 +28,10 @@ const pricingFeatures = [
 
 const includedFeatures = [
   'Unlimited health questions',
+  'Book consultations',
+  'Order lab tests',
+  'Order medications',
   'Symptom checking',
-  'First-aid guidance',
-  'Medication information',
-  'Wellness tips & advice',
   'Specialist referrals',
 ];
 
@@ -158,10 +158,10 @@ export default function Pricing() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-8 py-4 bg-whatsapp hover:bg-whatsapp-dark text-white font-semibold rounded-full transition-all duration-300 hover:shadow-glow-green-lg hover:scale-[1.03]"
               >
-                Start Your Free Trial
+                Get Started on WhatsApp
               </a>
               <p className="text-xs text-muted-foreground mt-3">
-                7 days free. Cancel anytime. No credit card required.
+                5 free questions daily. Secure 3-layer encryption. No credit card required.
               </p>
             </div>
           </div>

@@ -1,37 +1,51 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, Calendar, Clock } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
-const mockBlogs = [
-  {
-    id: 1,
-    title: "How AI is Transforming Primary Healthcare Access",
-    excerpt: "Discover the revolutionary impact of artificial intelligence in bridging the gap between patients and essential medical guidance.",
-    category: "Technology",
-    date: "Oct 24, 2025",
-    readTime: "5 min read",
-    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: 2,
-    title: "Understanding Your Symptoms: When to Seek Urgent Care",
-    excerpt: "A comprehensive guide to interpreting common physical symptoms and knowing when it's time to visit the emergency room.",
-    category: "Health Guide",
-    date: "Oct 20, 2025",
-    readTime: "7 min read",
-    image: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: 3,
-    title: "The Future of Telemedicine: WhatsApp and Beyond",
-    excerpt: "Why chat-based interfaces are becoming the new frontier for accessible digital healthcare worldwide.",
-    category: "Innovation",
-    date: "Oct 15, 2025",
-    readTime: "4 min read",
-    image: "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=800",
-  }
-];
+interface BlogPost {
+  id: string;
+  title: string;
+  excerpt: string;
+  category: string;
+  date: string;
+  readTime: string;
+  image: string;
+}
 
 export default function BlogPreview() {
+  const [blogs, setBlogs] = useState<BlogPost[]>([]);
+
+  useEffect(() => {
+    async function fetchBlogs() {
+      try {
+        const response = await fetch('https://fra.cloud.appwrite.io/v1/databases/website-db/collections/blogs/documents', {
+          headers: { 'X-Appwrite-Project': 'lexrunit-general-db' }
+        });
+        const data = await response.json();
+        
+        const drandreBlogs = (data.documents || [])
+          .filter((doc: any) => doc.tags && Array.isArray(doc.tags) && doc.tags.includes('drandre'))
+          .map((doc: any) => ({
+            id: doc.$id,
+            title: doc.title,
+            excerpt: doc.excerpt || doc.content?.substring(0, 100) + '...',
+            category: doc.category || 'Health',
+            date: new Date(doc.publishedAt || doc.$createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+            readTime: doc.readTime || '5 min read',
+            image: doc.coverImage || doc.image || 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=800'
+          }))
+          .slice(0, 3);
+          
+        setBlogs(drandreBlogs);
+      } catch (e) {
+        console.error('Error fetching blogs', e);
+      }
+    }
+    fetchBlogs();
+  }, []);
+
+  if (blogs.length === 0) return null;
+
   return (
     <section id="blog-preview" className="py-24 bg-white relative z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -52,7 +66,7 @@ export default function BlogPreview() {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {mockBlogs.map((blog, index) => (
+          {blogs.map((blog, index) => (
             <motion.article 
               key={blog.id}
               initial={{ opacity: 0, y: 30 }}

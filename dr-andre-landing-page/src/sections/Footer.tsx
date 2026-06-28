@@ -5,10 +5,10 @@ import { useScrollReveal } from '@/hooks/useScrollReveal';
 const WHATSAPP_LINK = 'https://wa.me/2349012512401';
 
 const footerLinks = [
-  { label: 'About', href: '#' },
-  { label: 'Privacy Policy', href: '#' },
-  { label: 'Terms of Service', href: '#' },
-  { label: 'Disclaimer', href: '#' },
+  { label: 'About', href: './about' },
+  { label: 'Privacy Policy', href: 'https://lexrunit.com/privacy' },
+  { label: 'Terms of Service', href: 'https://lexrunit.com/terms' },
+  { label: 'Disclaimer', href: 'https://lexrunit.com/disclaimer' },
   { label: 'Contact', href: WHATSAPP_LINK },
 ];
 
@@ -31,7 +31,7 @@ export default function Footer() {
           className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
         >
           <h2 className="text-3xl sm:text-4xl lg:text-6xl font-extrabold text-primary-dark tracking-tight mb-6">
-            Ready for Smart<br className="hidden sm:block" /> Healthcare?
+            Ready for 24/7<br className="hidden sm:block" /> care?
           </h2>
           <p className="text-lg text-muted-foreground mb-10 max-w-xl mx-auto">
             Join thousands of users already getting instant health guidance on WhatsApp.
@@ -52,7 +52,7 @@ export default function Footer() {
           </motion.a>
 
           <p className="text-sm text-muted-foreground mt-4">
-            Start your 7-day free trial. No credit card required.
+            Get 5 free questions daily. No credit card required.
           </p>
         </motion.div>
       </div>
@@ -68,9 +68,7 @@ export default function Footer() {
           <div className="flex flex-col items-center gap-8">
             {/* Logo */}
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                <Stethoscope className="w-4 h-4 text-white" />
-              </div>
+              <img src="https://res.cloudinary.com/dlvffw5wt/image/upload/v1782541050/2-removebg-preview_yei74a.png" alt="Dr. Andre Logo" className="w-8 h-8 object-contain" />
               <span className="font-bold text-primary-dark">Dr. Andre</span>
               <span className="text-sm text-muted-foreground">by Lexrunit</span>
             </div>

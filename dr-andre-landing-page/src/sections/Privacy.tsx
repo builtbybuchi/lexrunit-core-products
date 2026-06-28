@@ -2,12 +2,6 @@ import { motion } from 'framer-motion';
 import { Shield, Lock, Eye, FileCheck } from 'lucide-react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
-const complianceBadges = [
-  { label: 'NDPC Nigeria', abbr: 'NDPC' },
-  { label: 'GDPR Compliant', abbr: 'GDPR' },
-  { label: 'HIPAA Aligned', abbr: 'HIPAA' },
-];
-
 const privacyFeatures = [
   {
     icon: Lock,
@@ -45,13 +39,6 @@ export default function Privacy() {
             animate={isVisible ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
           >
-            {/* Label */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/10 rounded-full mb-6">
-              <Lock className="w-4 h-4 text-accent" />
-              <span className="text-sm font-semibold text-accent uppercase tracking-wider">
-                Privacy &amp; Security
-              </span>
-            </div>
 
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-6">
               Your privacy is our{' '}
@@ -86,25 +73,6 @@ export default function Privacy() {
               })}
             </div>
 
-            {/* Compliance Badges */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={isVisible ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.6 }}
-              className="flex flex-wrap gap-3 mt-10"
-            >
-              {complianceBadges.map((badge) => (
-                <div
-                  key={badge.abbr}
-                  className="flex items-center gap-2 px-4 py-2.5 bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl"
-                >
-                  <Shield className="w-4 h-4 text-accent" />
-                  <span className="text-sm font-medium text-white/90">
-                    {badge.label}
-                  </span>
-                </div>
-              ))}
-            </motion.div>
           </motion.div>
 
           {/* Right Column: Shield Image */}

@@ -50,7 +50,7 @@ const features = [
     icon: Sparkles,
     title: 'Health & Wellness Tips',
     description: 'Daily wellness tips, fitness advice, and nutrition guidance tailored for you.',
-    image: '/images/bento-health-tech.jpg',
+    image: 'https://res.cloudinary.com/dlvffw5wt/image/upload/v1775347685/this_is_engineering-woman-8499932_1920_vhwpbn.jpg',
     gradient: '',
     colSpan: 'md:col-span-2',
     rowSpan: '',
